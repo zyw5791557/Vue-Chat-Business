@@ -1,0 +1,26 @@
+@charset "UTF-8";
+.scale-enter-active,
+.scale-leave-active {
+  transition: all .3s;
+}
+
+.scale-enter,
+.scale-leave-to {
+  opacity: 0;
+  transform: scale(0);
+}
+
+/* 可以设置不同的进入和离开动画 */
+/* 设置持续时间和动画函数 */
+.silde-rightIn-enter-active {
+  transition: all .3s ease;
+}
+
+.silde-rightIn-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.silde-rightIn-enter,
+.silde-rightIn-leave-to {
+  transform: translateX(340px);
+}

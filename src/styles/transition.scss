@@ -1,0 +1,36 @@
+.scale-enter-active,
+.scale-leave-active {
+    transition: all .3s
+}
+
+.scale-enter,
+.scale-leave-to
+/* .scale-leave-active in below version 2.1.8 */
+
+{
+    opacity: 0;
+    transform: scale(0);
+}
+
+
+/* 可以设置不同的进入和离开动画 */
+
+
+/* 设置持续时间和动画函数 */
+
+.silde-rightIn-enter-active {
+    transition: all .3s ease;
+}
+
+.silde-rightIn-leave-active {
+    transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+.silde-rightIn-enter,
+.silde-rightIn-leave-to
+/* .silde-rightIn-leave-active for below version 2.1.8 */
+
+{
+    transform: translateX(340px);
+    //   opacity: 0;
+}
