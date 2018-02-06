@@ -31,8 +31,8 @@ import router from './router';
 import api from './api';
 Vue.use(api);
 
-// 线上资源服务器地址
-Vue.prototype.$STATIC_URL = 'http://static.emlice.top';
+// 测试资源服务器地址
+Vue.prototype.$STATIC_URL = 'http://localhost:8989';
 
 // 全局 axiosBaseURL
 Vue.prototype.$BASE_URL = process.env.API_ROOT;

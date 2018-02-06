@@ -63,8 +63,8 @@ app.use(devMiddleware)
 app.use(hotMiddleware)
 
 // 导入接口 
-// const routes = require('../server/index.js');
-// app.use(routes);
+const socketService = require('../server/index.js');
+app.use(socketService);
 
 // serve pure static assets
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
