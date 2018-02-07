@@ -24,9 +24,6 @@ Vue.prototype.$NProgress = NProgress;
 // 引入路由配置
 import router from './router';
 
-// 引入重封装的 LocalStorage
-// import { setLocalStorage, getLocalStorage } from './common/js/util.js';
-
 // 引入自定义插件 - API 接口
 import api from './api';
 Vue.use(api);
@@ -36,10 +33,8 @@ Vue.prototype.$STATIC_URL = 'http://localhost:8989';
 
 // 全局 axiosBaseURL
 Vue.prototype.$BASE_URL = process.env.API_ROOT;
-
 new Vue({
 	router,
 	store,
 	render: h => h(App)
 }).$mount('#app');
-

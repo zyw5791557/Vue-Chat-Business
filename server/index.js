@@ -37,12 +37,36 @@ http.listen(3000, function() {
 var users = {};
 
 // 抽离公共方法
+
+function isTourist(value) {
+    return value.slice(0,2) === '游客';
+}
+
 var emitOnlineUser = function(u) {
-    var query = { name: { $in: Object.keys(u) } }
-    User.find(query, { name: 1, avatar: 1 }, function(err,r) {
-        if(err) throw err;
-        io.emit('user join', r);
+    // 服务器查询用户
+    // var query = { name: { $in: Object.keys(u) } }
+    // User.find(query, { name: 1, avatar: 1 }, function(err,r) {
+    //     if(err) throw err;
+    //     io.emit('user join', r);
+    // });
+
+
+    // 带游客
+    let res = [];
+    new Promise((resolve, reject) => {
+        var query = { name: { $in: Object.keys(u) } }
+        User.find(query, { name: 1, avatar: 1 }, function(err,r) {
+            if(err) throw err;
+            resolve(r);
+        });
+    }).then(res => {
+        let touristList = Object.keys(u).filter(isTourist).map(item => {
+            return { name: item, avatar: '/static/images/tourist.png' };
+        });
+        res = res.concat(touristList);
+        io.emit('user join', res);
     });
+    
 }
 
 // socket.io code
@@ -50,9 +74,10 @@ io.on('connection', function(socket) {
     var username;
 
     socket.on('user join', function(user) {
+        console.log(user + ' 进入了聊天室');
         username = user;
         users[user] = socket;
-        emitOnlineUser(users);          // 用户加入发射在线用户信息
+        emitOnlineUser(users);         // 用户加入发射在线用户信息
     });
 
     // 改变 online panel
@@ -69,12 +94,19 @@ io.on('connection', function(socket) {
         emitOnlineUser(users);          // 用户退出刷新在线用户信息
     });
 
+    socket.on('logout', function(name) {
+        delete users[name];
+        console.log(name + '离开了聊天室');
+        emitOnlineUser(users);          // 用户退出刷新在线用户信息
+    });
+
 
     // 消息已读
     socket.on('message read', function(res) {
         var msgArr = res.msgs;
         var name = res.readUser;
         var idArr = [];
+        if(msgArr.length === 0) return;
         if(msgArr[0].to === 'all') return;
         for(var i = 0;i < msgArr.length;i++) {
             if(msgArr[i].to === name) {

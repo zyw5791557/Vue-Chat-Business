@@ -1,5 +1,6 @@
 <script>
-import Date from '@/common/js/util.js';
+import Date from '@/common/js/dateTools.js';
+import { touristTips } from '@/common/js/util.js';
 import SocketClient from '@/socket-client';
 import UserSettingModule from '@/components/UserSettingModule';
 import SystemSettingModule from '@/components/SystemSettingModule';
@@ -63,6 +64,7 @@ export default {
      * imgReader                截图上传
      * pasteMsg                 剪贴板消息
      */
+    name: 'Chatroom',
     components: {
         UserSettingModule,
         SystemSettingModule,
@@ -130,7 +132,7 @@ export default {
     },
     computed: {
         userInfo () {
-            return this.$store.state.userInfo;
+            return this.$store.state.userInfo || this.$store.state.touristInfo;
         },
         mask () {
             if(
@@ -165,6 +167,7 @@ export default {
             this.$store.commit('UPDATE_USERINFO', JSON.parse(localStorage.getItem('UserInfo')));
         },
         getMyPanel () {
+            if(this.$store.state.touristInfo !== null) return touristTips(this);
             this.userSettingFlag = true;
             socket.emit('take userInfo', this.userInfo.name);
         },
@@ -324,10 +327,14 @@ export default {
             socket.emit('take messages', o);
         },
         logout () {
+            socket.emit('logout', this.userInfo.name);
             localStorage.removeItem('UserInfo');
+            localStorage.removeItem('TouristInfo');
             this.$router.push({ name: 'Login' });
         },
         getUserPanel (name) {
+            if(this.$store.state.touristInfo !== null) return touristTips(this);
+            if(name.slice(0,2) === '游客') return;
             if(name !== this.userInfo.name) {
                 this.userPanelFlag = true;
                 socket.emit('take userInfo', name);

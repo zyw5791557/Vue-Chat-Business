@@ -1,6 +1,7 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-Vue.use(VueRouter)
+// 引入依赖 Vue vue-router
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+Vue.use(VueRouter);
 
 const Login = resolve => require(['@/views/Login.vue'],resolve);
 const Register = resolve => require(['@/views/Register.vue'],resolve);
@@ -41,10 +42,12 @@ const router = new VueRouter({
 	mode: 'history',       // 需要后台配置支持
 	routes
 });
-
 router.beforeEach((to, from, next) => {
+    // 获取仓库
+    const Store = router.app.$store;
+    let touristInfo = Store.state.touristInfo;
 	if(to.path === '/chatroom') {
-		const user = localStorage.getItem('UserInfo');
+		const user = localStorage.getItem('UserInfo') || touristInfo;
 		if(!user) {
 			next({ path: '/login' });
 		}else {

@@ -1,5 +1,15 @@
 <script>
+/**@data
+ * tip              注册小提示
+ * form             表单状态
+ * 
+ * @methods
+ * usernameCheck    用户名检查
+ * login            跳转登录页
+ * register         注册事件
+ */
 export default {
+    name: 'Register',
     data () {
         return {
             tip: '滴滴,新司机打卡~',
@@ -10,6 +20,16 @@ export default {
         }
     },
     methods: {
+        usernameCheck () {
+            if(this.form.username.slice(0,2) === '游客') {
+                this.$notify({
+                    title: '警告',
+                    message: '不要冒充游客啦~',
+                    type: 'warning'
+                });
+                this.form.username = '';
+            }
+        },
         login () {
             this.$router.push({ name: 'Login' })
         },
@@ -85,7 +105,7 @@ export default {
                         <div>
                             <i class="icon"> </i>
                         </div>
-                        <input v-model="form.username" id="name" type="text" placeholder="用户名">
+                        <input v-model="form.username" @blur="usernameCheck" id="name" type="text" placeholder="用户名">
                     </div>
                     <div class="input normal">
                         <div>

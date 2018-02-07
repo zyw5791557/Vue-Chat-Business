@@ -4,6 +4,7 @@
 
 const state = {
 	userInfo: JSON.parse(localStorage.getItem('UserInfo')),
+	touristInfo: JSON.parse(localStorage.getItem('TouristInfo')),
 	expression: {
 		baidu: {
 			space: 30,

@@ -1,4 +1,5 @@
 ﻿/* user */
+
 * {
     margin: 0;
     padding: 0;
@@ -6,6 +7,7 @@
     outline: 0;
     box-sizing: border-box;
 }
+
 html,
 body {
     width: 100%;
@@ -13,15 +15,18 @@ body {
     font-family: Arial, Verdana, '微软雅黑', 黑体, serif;
     color: #333;
 }
+
 #app {
     width: 100%;
     height: 100%;
 }
+
 .windows {
-    font-family: Arial,"sans-serif";
+    font-family: Arial, "sans-serif";
     width: 100%;
     height: 100%;
 }
+
 .chatRoom {
     width: 1000px;
     height: 100%;
@@ -29,6 +34,7 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 .chatRoom header {
     width: 100%;
     height: 80px;
@@ -36,7 +42,8 @@ body {
     display: flex;
     flex-direction: row;
 }
-.chatRoom  header .logo{
+
+.chatRoom header .logo {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -44,7 +51,7 @@ body {
     width: 250px;
 }
 
-.chatRoom  header .nav-list {
+.chatRoom header .nav-list {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -64,7 +71,8 @@ body {
     justify-content: flex-end;
     padding-right: 10px;
 }
-.chatRoom  header .user-panel .online {
+
+.chatRoom header .user-panel .online {
     width: 10px;
     height: 10px;
     border-radius: 50%;
@@ -73,7 +81,7 @@ body {
     background-color: #7cfc00;
 }
 
-.chatRoom  header .user-panel .avatar-text {
+.chatRoom header .user-panel .avatar-text {
     background-color: aquamarine;
     width: 60px;
     height: 60px;
@@ -90,14 +98,6 @@ body {
     background-size: 60px 60px;
 }
 
-
-
-
-
-
-
-
-
 .avatar-text {
     display: flex;
     flex-direction: row;
@@ -106,9 +106,10 @@ body {
     color: #fff
 }
 
-.avatar-image,.avatar-text {
+.avatar-image,
+.avatar-text {
     border-radius: 50%;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 * {
@@ -120,10 +121,11 @@ body {
 }
 
 html {
-    font-family: Arial,Verdana,微软雅黑,黑体,serif
+    font-family: Arial, Verdana, 微软雅黑, 黑体, serif
 }
 
-body,html {
+body,
+html {
     width: 100%;
     height: 100%
 }
@@ -156,11 +158,12 @@ body {
     /* background-position: 50%; */
     background-size: cover;
     text-align: center;
-    color: hsla(0,0%,100%,0);
+    color: hsla(0, 0%, 100%, 0);
     overflow: hidden;
 }
 
-.background,.background>div {
+.background,
+.background>div {
     height: 100%;
     background-repeat: no-repeat
 }
@@ -188,7 +191,7 @@ body {
 @font-face {
     font-family: iconfont;
     src: url("//at.alicdn.com/t/font_1476676673_9982553.eot");
-    src: url("//at.alicdn.com/t/font_1476676673_9982553.eot?#iefix") format("embedded-opentype"),url("//at.alicdn.com/t/font_1476676673_9982553.woff") format("woff"),url("//at.alicdn.com/t/font_1476676673_9982553.ttf") format("truetype"),url("//at.alicdn.com/t/font_1476676673_9982553.svg#iconfont") format("svg")
+    src: url("//at.alicdn.com/t/font_1476676673_9982553.eot?#iefix") format("embedded-opentype"), url("//at.alicdn.com/t/font_1476676673_9982553.woff") format("woff"), url("//at.alicdn.com/t/font_1476676673_9982553.ttf") format("truetype"), url("//at.alicdn.com/t/font_1476676673_9982553.svg#iconfont") format("svg")
 }
 
 .icon {
@@ -210,7 +213,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(0,0,0,.5);
+    background-color: rgba(0, 0, 0, .5);
     border-radius: 4px
 }
 
@@ -248,7 +251,7 @@ body {
 }
 
 .mask-layout {
-    background-color: rgba(0,0,0,.2);
+    background-color: rgba(0, 0, 0, .2);
     z-index: 10;
     width: 100%;
     height: 100%;
@@ -262,7 +265,8 @@ body {
     height: 100%
 }
 
-.login,.login>div {
+.login,
+.login>div {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -272,7 +276,7 @@ body {
 .login>div {
     width: 460px;
     height: auto;
-    background-color: hsla(0,0%,98%,.8);
+    background-color: hsla(0, 0%, 98%, .8);
     padding: 20px 30px 30px
 }
 
@@ -281,6 +285,7 @@ body {
 }
 
 .login>div>div:nth-child(1000n+2) {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -483,7 +488,8 @@ header {
     background-color: #ff4500
 }
 
-.user-panel>div:nth-child(1000n+2),.user-panel>img {
+.user-panel>div:nth-child(1000n+2),
+.user-panel>img {
     cursor: pointer
 }
 
@@ -509,7 +515,6 @@ header {
     position: relative;
 }
 
-
 .switchBtn:after {
     position: absolute;
     content: '';
@@ -520,11 +525,15 @@ header {
     -moz-transition: all .3s;
     transition: all .3s;
 }
+
 .switchBtn.on:after {
+    top: -6px;
     left: -1px;
     background-color: #7cfc00;
 }
+
 .switchBtn.off:after {
+    top: -6px;
     left: 16px;
     background-color: #ff4500;
 }
@@ -667,7 +676,8 @@ header {
     background-size: 300px 300px
 }
 
-.user-setting>:nth-child(1000n+1) .background-image,.user-setting>:nth-child(1000n+1) .background-mask {
+.user-setting>:nth-child(1000n+1) .background-image,
+.user-setting>:nth-child(1000n+1) .background-mask {
     width: 300px;
     height: 300px;
     position: absolute;
@@ -738,7 +748,7 @@ header {
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    background-color: rgba(0,0,0,.3);
+    background-color: rgba(0, 0, 0, .3);
     top: 20px;
     color: #eee;
     font-size: 28px;
@@ -757,7 +767,8 @@ header {
     padding-bottom: 20px
 }
 
-.user-setting .normal-status>:nth-child(1000n+1),.user-setting .normal-status>:nth-child(1000n+1)>div {
+.user-setting .normal-status>:nth-child(1000n+1),
+.user-setting .normal-status>:nth-child(1000n+1)>div {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -832,7 +843,8 @@ header {
     padding-bottom: 20px
 }
 
-.user-setting .edit-status>:nth-child(1000n+1),.user-setting .edit-status>:nth-child(1000n+1)>div {
+.user-setting .edit-status>:nth-child(1000n+1),
+.user-setting .edit-status>:nth-child(1000n+1)>div {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -868,7 +880,8 @@ header {
     top: -3px
 }
 
-.user-setting .edit-status>:nth-child(1000n+1)>div>div:nth-child(1000n+2)>input,.user-setting .edit-status>:nth-child(1000n+1)>div>div:nth-child(1000n+2)>select {
+.user-setting .edit-status>:nth-child(1000n+1)>div>div:nth-child(1000n+2)>input,
+.user-setting .edit-status>:nth-child(1000n+1)>div>div:nth-child(1000n+2)>select {
     width: 150px;
     height: 26px;
     margin-bottom: 2px;
@@ -909,7 +922,7 @@ header {
     flex: 1;
     display: flex;
     flex-direction: row;
-    background-color: hsla(0,0%,95%,.2);
+    background-color: hsla(0, 0%, 95%, .2);
     overflow: auto
 }
 
@@ -941,7 +954,8 @@ header {
     transform: translateX(-5px)
 }
 
-.user-list-item>div:nth-child(1000n+1),.user-list-item>img:nth-child(1000n+1) {
+.user-list-item>div:nth-child(1000n+1),
+.user-list-item>img:nth-child(1000n+1) {
     margin: 10px 5px
 }
 
@@ -1094,7 +1108,8 @@ header {
     max-height: 500px
 }
 
-.message-list-item .native-message>:nth-child(1000n+2) .unknown,.message-list-item .native-message>:nth-child(1000n+2) .url {
+.message-list-item .native-message>:nth-child(1000n+2) .unknown,
+.message-list-item .native-message>:nth-child(1000n+2) .url {
     padding: 5px 10px;
     margin: 0;
     border: 1px solid #999;
@@ -1137,10 +1152,10 @@ header {
 }
 
 .message-list-item .plugin-dom-container>div>p {
-    white-space: nowrap!important;
-    max-width: 100%!important;
-    overflow: hidden!important;
-    text-overflow: ellipsis!important
+    white-space: nowrap !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important
 }
 
 .toolbar {
@@ -1148,7 +1163,8 @@ header {
     min-height: 35px
 }
 
-.toolbar,.toolbar div {
+.toolbar,
+.toolbar div {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -1332,7 +1348,7 @@ header {
     justify-content: flex-start;
     margin: 3px 0;
     max-width: 60px;
-    text-align: center
+    text-align: center;
 }
 
 .group-info .userList>div>:nth-child(1000n+1) {
@@ -1341,7 +1357,8 @@ header {
 
 .group-info .userList>div span {
     font-size: 12px;
-    margin: 0 2px
+    margin: 0 2px;
+    max-width: 60px;
 }
 
 .group-info input {
@@ -1688,7 +1705,8 @@ header {
     background-size: 300px 300px
 }
 
-.user-info>:nth-child(1000n+1) .background-image,.user-info>:nth-child(1000n+1) .background-mask {
+.user-info>:nth-child(1000n+1) .background-image,
+.user-info>:nth-child(1000n+1) .background-mask {
     width: 300px;
     height: 300px;
     position: absolute;
@@ -1758,7 +1776,7 @@ header {
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    background-color: rgba(0,0,0,.3);
+    background-color: rgba(0, 0, 0, .3);
     top: 20px;
     color: #eee;
     font-size: 28px;
@@ -1777,7 +1795,8 @@ header {
     padding-bottom: 20px
 }
 
-.user-info .normal-status>:nth-child(1000n+1),.user-info .normal-status>:nth-child(1000n+1)>div {
+.user-info .normal-status>:nth-child(1000n+1),
+.user-info .normal-status>:nth-child(1000n+1)>div {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -1851,11 +1870,12 @@ header {
 
 .group-manage {
     flex-direction: row;
-    background-color: hsla(0,0%,95%,.2);
+    background-color: hsla(0, 0%, 95%, .2);
     flex: 1
 }
 
-.group-manage,.group-manage>div:nth-child(1000n+1) {
+.group-manage,
+.group-manage>div:nth-child(1000n+1) {
     display: flex;
     justify-content: center;
     align-items: center
@@ -1966,11 +1986,9 @@ header {
     background-color: #29b6f6
 }
 
-
-
 .avatar-image {
-    width: 40px!important;
-    height: 40px!important;
+    width: 40px !important;
+    height: 40px !important;
 }
 
 /* 歌词容器 */
@@ -1992,12 +2010,14 @@ header {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
 .lyric_content span {
     float: right;
 }
+
 .description {
     padding-right: 120px;
-    padding-left: 8px; 
+    padding-left: 8px;
     float: right;
 }
 
@@ -2006,5 +2026,11 @@ header {
 }
 
 img[src="/images/imgError.jpg"] {
-    max-height: 100px!important;
+    max-height: 100px !important;
+}
+
+.text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
