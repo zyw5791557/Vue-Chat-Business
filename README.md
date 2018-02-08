@@ -6,9 +6,9 @@
 
 语言: [简体中文](REMEAD.md)
 
-> 该版本可能商用, 推荐使用[Vue-Chat](https://github.com/zyw5791557/Vue-Chat)
-> [Vue-Chat](https://github.com/zyw5791557/Vue-Chat)为个人项目, 将会不定期抽空维护和ADD IDEA。
-> 功能基本一致, 个别功能会做增删。
+> 该版本可能商用, 推荐使用[Vue-Chat](https://github.com/zyw5791557/Vue-Chat)  
+> [Vue-Chat](https://github.com/zyw5791557/Vue-Chat)为个人项目, 将会不定期抽空维护和ADD IDEA。  
+> 功能基本一致, 个别功能会做增删。  
 
 该项目是[EmliceChat](https://github.com/zyw5791557/Vue-Chat-Business)的重构项目。不再使用 jquery,采用效果更好的Vue全家桶编写，同时也方便后期维护和新IDEA的添加。
 
