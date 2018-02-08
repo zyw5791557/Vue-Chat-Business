@@ -8,6 +8,10 @@
 * userSettingState		用户设置面板状态
 * systemSettingState	系统设置面板状态
 * userPanelState		用户面板状态
+* roomNoticeState		聊天室消息窗口状态
+* roomInfoState			聊天室信息窗口状态
+* expressionState		表情界面状态
+* codeInputState		代码输入窗口状态
 **/
 
 const state = {
@@ -15,9 +19,13 @@ const state = {
 	touristInfo: JSON.parse(localStorage.getItem('TouristInfo')),
 	globalMask: false,
 	lyricState: false,
-	userPanelState: false,
 	userSettingState: false,
 	systemSettingState: false,
+	userPanelState: false,
+	roomNoticeState: false,
+	roomInfoState: false,
+	expressionState: false,
+	codeInputState: false,
 	expression: {
 		baidu: {
 			space: 30,

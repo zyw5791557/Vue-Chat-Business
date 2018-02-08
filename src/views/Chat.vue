@@ -19,7 +19,6 @@ export default {
             message: '',
             code: '',
             myPanel: {},
-            duration: ~~localStorage.getItem('Duration'),
             onlineUsers: '',
             myUserListArr: {
                 all: {
@@ -51,14 +50,8 @@ export default {
                 WEB_SITE: 'https://www.emlice.top',
                 clearDataLock: true
             },
-            userSettingFlag: false,
-            systemSettingFlag: false,
             chatPanelFlag: true,
-            roomNoticeFlag: false,
-            roomInfoFlag: false,
-            expressionFlag: false,
             secretPanel: false,
-            codeInputFlag: false,
             loading: true,
             contactsPanelLock: false
         }
@@ -70,20 +63,8 @@ export default {
         },
         chatPanelFlag (val) {
             // 更新仓库歌词状态
-            this.$store.commit('UPDATE_LYRICSTATE', !this.chatPanelFlag)
-        },
-        roomNoticeFlag (val) {
-            this.$store.commit('UPDATE_GLOBALMASK', val);
-        },
-        roomInfoFlag (val) {
-            this.$store.commit('UPDATE_GLOBALMASK', val);
-        },
-        expressionFlag (val) {
-            this.$store.commit('UPDATE_GLOBALMASK', val);
-        },
-        codeInputFlag (val) {
-            this.$store.commit('UPDATE_GLOBALMASK', val);
-        },
+            this.$store.commit('UPDATE_LYRICSTATE', !this.chatPanelFlag);
+        }
     },
     computed: {
         userInfo () {
@@ -91,7 +72,19 @@ export default {
         },
         userPanelState () {
             return this.$store.state.userPanelState;
-        }
+        },
+        roomNoticeState () {
+            return this.$store.state.roomNoticeState;
+        },
+        roomInfoState () {
+            return this.$store.state.roomInfoState;
+        },
+        expressionState () {
+            return this.$store.state.expressionState;
+        },
+        codeInputState () {
+            return this.$store.state.codeInputState;
+        },
     },
     methods: {
         userInfoUpdate () {
@@ -252,7 +245,7 @@ export default {
             console.log('消息', msg);
             socket.emit('message', msg);
             this[clear] = '';
-            if(clear === 'code') this.codeInputFlag = false;
+            if(clear === 'code') this.$store.commit('UPDATE_CODEINPUTSTATE', false);
         },
         takeMessage (o) {
             socket.emit('take messages', o);
@@ -427,9 +420,9 @@ export default {
                     <p>{{ currentChatUserInfo.name }}</p>
                 </div>
                 <div v-if="!secretPanel">
-                    <div @click="roomNoticeFlag = true" style="margin: auto 8px;" class="roomNotice">
+                    <div @click="$store.commit('UPDATE_ROOMNOTICESTATE', true);" style="margin: auto 8px;" class="roomNotice">
                         <i class="icon" title="公告"></i></div>
-                    <div @click="roomInfoFlag = true" style="margin: auto 8px;" class="roomInfo">
+                    <div @click="$store.commit('UPDATE_ROOMINFOSTATE', true);" style="margin: auto 8px;" class="roomInfo">
                         <i class="icon" title="关于"></i></div>
                 </div>
             </div>
@@ -465,13 +458,13 @@ export default {
                 </div>
             </div>
             <div class="toolbar">
-                <div @click="expressionFlag = true">
+                <div @click="$store.commit('UPDATE_EXPRESSIONSTATE', true);">
                     <i class="icon" title="表情"></i>
                 </div>
                 <div @click="unfinished">
                     <i class="icon" title="图片"></i>
                 </div>
-                <div @click="codeInputFlag = true">
+                <div @click="$store.commit('UPDATE_CODEINPUTSTATE', true);">
                     <i class="icon" title="代码"></i>
                 </div>
                 <input type="file" class="image-input" accept="image/png,image/jpeg,image/gif">
@@ -488,31 +481,34 @@ export default {
             </div>
             <template v-if="!secretPanel">
                 <transition name="silde-rightIn">
-                    <panel-room-notice-module v-show="roomNoticeFlag" @close="roomNoticeFlag = false"></panel-room-notice-module>
+                    <panel-room-notice-module 
+                        v-show="roomNoticeState" 
+                        @close="$store.commit('UPDATE_ROOMNOTICESTATE', false);">
+                    </panel-room-notice-module>
                 </transition>
                 <transition name="silde-rightIn">
                     <panel-room-info-module 
-                        v-show="roomInfoFlag"
+                        v-show="roomInfoState"
                         :data="onlineUsers"
                         @startChat="getUserPanel"
-                        @close="roomInfoFlag = false">
+                        @close="$store.commit('UPDATE_ROOMINFOSTATE', false);">
                     </panel-room-info-module>
                 </transition>
             </template>
             <transition name="scale">
                 <panel-expression-module 
-                    v-show="expressionFlag" 
+                    v-show="expressionState" 
                     @send="sendMessage" 
-                    @close="expressionFlag = false"
+                    @close="$store.commit('UPDATE_EXPRESSIONSTATE', false);"
                     @unfinished="unfinished"
                     ></panel-expression-module>
             </transition>
             <transition name="scale">
-                <div v-show="codeInputFlag" class="code-input">
+                <div v-show="codeInputState" class="code-input">
                     <textarea v-model="code" placeholder="输入要展示的代码"></textarea>
                     <div>
                         <button @click="sendMessage(code,'code','code')" class="sendCode">发送</button>
-                        <button @click="codeInputFlag = false" class="cancelCode">取消</button></div>
+                        <button @click="$store.commit('UPDATE_CODEINPUTSTATE', false);" class="cancelCode">取消</button></div>
                 </div>
             </transition>
             <transition name="scale">

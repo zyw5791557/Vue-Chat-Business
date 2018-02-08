@@ -25,8 +25,8 @@ export default {
      * userList                 用户列表
      * userPanelInfo            用户面板信息
      * systemConfig             系统设置配置项
-     * userSettingFlag          用户设置窗口状态
-     * systemSettingFlag        系统设置窗口状态
+     * userSettingState          用户设置窗口状态
+     * systemSettingState        系统设置窗口状态
      * chatPanelFlag            聊天窗口状态
      * roomNoticeFlag           群聊公告窗口状态
      * roomInfoFlag             群聊信息窗口状态
@@ -68,14 +68,11 @@ export default {
 	data() {
 		return {
             myPanel: {},
-            duration: ~~localStorage.getItem('Duration'),
             systemConfig: {
                 SOURCE_CODE: 'https://github.com/zyw5791557/EmliceChat',
                 WEB_SITE: 'https://www.emlice.top',
                 clearDataLock: true
             },
-            userSettingFlag: false,
-            systemSettingFlag: false,
             loading: true,
             contactsPanelLock: false
 		}
@@ -84,12 +81,6 @@ export default {
         currentChatData (res) {
             // 朕已阅
             socket.emit('message read', { readUser: this.userInfo.name, msgs: res });
-        },
-        userSettingFlag (val) {
-            this.$store.commit('UPDATE_GLOBALMASK', val);
-        },
-        systemSettingFlag (val) {
-            this.$store.commit('UPDATE_GLOBALMASK', val);
         }
     },
     computed: {
@@ -99,14 +90,18 @@ export default {
         mask () {
             return this.$store.state.globalMask;
         },
+        userSettingState () {
+            return this.$store.state.userSettingState;
+        },
+        systemSettingState () {
+            return this.$store.state.systemSettingState;
+        },
         lyricState () {
             return this.$store.state.lyricState; 
         }
     },
 	methods: {
         clearPanel () {
-            this.userSettingFlag = false;
-            this.systemSettingFlag = false;
             this.$store.commit('UPDATE_GLOBALMASK', false);
         },
         userInfoUpdate () {
@@ -114,7 +109,7 @@ export default {
         },
         getMyPanel () {
             if(this.$store.state.touristInfo !== null) return touristTips(this);
-            this.userSettingFlag = true;
+            this.$store.commit('UPDATE_USERSETTINGSTATE', true);
             socket.emit('take userInfo', this.userInfo.name);
         },
         unfinished () {
@@ -159,7 +154,7 @@ export default {
                         <div @click="unfinished" class="nav-list-item " title="联系人">
                             <i class="icon"></i>
                         </div>
-                        <div @click="systemSettingFlag = true" class="nav-list-item " title="系统设置">
+                        <div @click="$store.commit('UPDATE_SYSTEMSETTINGSTATE', true);" class="nav-list-item " title="系统设置">
                             <i class="icon"></i>
                         </div>
                     </div>
@@ -171,17 +166,17 @@ export default {
                 <router-view></router-view>
                 <transition name="scale">
                     <user-setting-module 
-                        v-show="userSettingFlag" 
+                        v-show="userSettingState" 
                         :data="myPanel" 
-                        @close="userSettingFlag = false"
+                        @close="$store.commit('UPDATE_USERSETTINGSTATE', false);"
                         @updateAvtar="userInfoUpdate"
                     ></user-setting-module>
                 </transition>
                 <transition name="scale">
                     <system-setting-module 
-                    v-show="systemSettingFlag" 
+                    v-show="systemSettingState" 
                     :data="systemConfig" 
-                    @close="systemSettingFlag = false"
+                    @close="$store.commit('UPDATE_SYSTEMSETTINGSTATE', false);"
                     @logout="logout"
                     ></system-setting-module>
                 </transition>

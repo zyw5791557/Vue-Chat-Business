@@ -55,7 +55,7 @@ router.beforeEach((to, from, next) => {
     // 获取仓库
     const Store = router.app.$store;
     let touristInfo = Store.state.touristInfo;
-	if(to.path === '/home') {
+	if(to.path === '/home/chat' || to.path === '/home') {
 		const user = localStorage.getItem('UserInfo') || touristInfo;
 		if(!user) {
 			next({ path: '/login' });
