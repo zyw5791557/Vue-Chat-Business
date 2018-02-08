@@ -5,18 +5,27 @@ Vue.use(VueRouter);
 
 const Login = resolve => require(['@/views/Login.vue'],resolve);
 const Register = resolve => require(['@/views/Register.vue'],resolve);
-const Chatroom = resolve => require(['@/views/Chatroom.vue'],resolve);
+const Home = resolve => require(['@/views/Home.vue'],resolve);
+const Chat = resolve => require(['@/views/Chat.vue'],resolve);
+
 const NotFound = resolve => require(['@/views/404.vue'],resolve);
 
 let routes = [
     {
-        path: '/chatroom',
-        component: Chatroom,
-        name: 'Chatroom'
+        path: '/home',
+        component: Home,
+        name: 'Home',
+        children: [
+            {
+                path: 'chat',
+                component: Chat,
+                name: 'Chat'
+            }
+        ]
     },
     {
         path: '/',
-        redirect: { path: '/chatroom' }
+        redirect: { path: '/home/chat' }
     },
     {
         path: '/login',
@@ -46,7 +55,7 @@ router.beforeEach((to, from, next) => {
     // 获取仓库
     const Store = router.app.$store;
     let touristInfo = Store.state.touristInfo;
-	if(to.path === '/chatroom') {
+	if(to.path === '/home') {
 		const user = localStorage.getItem('UserInfo') || touristInfo;
 		if(!user) {
 			next({ path: '/login' });

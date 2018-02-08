@@ -28,8 +28,11 @@ import router from './router';
 import api from './api';
 Vue.use(api);
 
-// 测试资源服务器地址
-Vue.prototype.$STATIC_URL = 'http://localhost:8989';
+// 配置文件
+import config from './config';
+
+// 资源服务器地址
+Vue.prototype.$STATIC_URL = config.$STATIC_URL;
 
 // 全局 axiosBaseURL
 Vue.prototype.$BASE_URL = process.env.API_ROOT;

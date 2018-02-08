@@ -1,10 +1,23 @@
 /**
 * @constant state - Vuex状态
+* userInfo				用户信息
+* touristInfo			游客信息
+* globalMask			全局蒙版
+* expression			表情集合
+*  - baidu					- 百度表情
+* userSettingState		用户设置面板状态
+* systemSettingState	系统设置面板状态
+* userPanelState		用户面板状态
 **/
 
 const state = {
 	userInfo: JSON.parse(localStorage.getItem('UserInfo')),
 	touristInfo: JSON.parse(localStorage.getItem('TouristInfo')),
+	globalMask: false,
+	lyricState: false,
+	userPanelState: false,
+	userSettingState: false,
+	systemSettingState: false,
 	expression: {
 		baidu: {
 			space: 30,

@@ -2,80 +2,20 @@
 import Date from '@/common/js/dateTools.js';
 import { touristTips } from '@/common/js/util.js';
 import SocketClient from '@/socket-client';
-import UserSettingModule from '@/components/UserSettingModule';
-import SystemSettingModule from '@/components/SystemSettingModule';
 import PanelRoomNoticeModule from '@/components/PanelRoomNoticeModule';
 import PanelRoomInfoModule from '@/components/PanelRoomInfoModule';
 import PanelExpressionModule from '@/components/PanelExpressionModule';
 import PanelUserInfoModule from '@/components/PanelUserInfoModule';
-import ContactsModule from '@/components/ContactsModule';
 export default {
-    /**@components  - 组件注册
-     * UserSettingModule        用户设置
-     * SystemSettingModule      系统设置
-     * PanelRoomNoticeModule    群聊公告面板
-     * PanelRoomInfoModule      群聊信息面板
-     * PanelExpressionModule    表情模块
-     * PanelUserInfoModule      用户信息面板
-     * ContactsModule           联系人模块
-     * 
-     * @data        - 状态
-     * userInfo                 用户信息
-     * myPanel                  我的面板信息
-     * duration                 注册时长
-     * onlineUsers              所用在线用户面板
-     * myUserListArr            我的临时会话集合
-     * currentChatData          当前聊天窗口的消息
-     * chatGroup                群聊组
-     * userList                 用户列表
-     * userPanelInfo            用户面板信息
-     * systemConfig             系统设置配置项
-     * userSettingFlag          用户设置窗口状态
-     * systemSettingFlag        系统设置窗口状态
-     * chatPanelFlag            聊天窗口状态
-     * roomNoticeFlag           群聊公告窗口状态
-     * roomInfoFlag             群聊信息窗口状态
-     * expressionFlag           表情输入窗口状态
-     * secretPanel              私聊 / 群聊标志位
-     * codeInputFlag            代码输入窗口状态
-     * userPanelFlag            用户面板窗口状态
-     * loading                  loading
-     * contactsPanelLock        联系人面板锁
-     * 
-     * @computed    - 计算属性
-     * mask                     全局蒙版
-     * 
-     * @methods     - 方法
-     * loadChatData             加载离线消息
-     * clearPanel               清除所有面板状态
-     * userInfoUpdate           更新用户信息
-     * loadChatPanel            加载聊天面板
-     * unfinished               未完成提示
-     * normalSmartProcess       消息智能处理
-     * noticeProcess            消息提示工厂
-     * userTip                  用户列表消息提示处理
-     * sendMessage              发送消息
-     * takeMessage              调取离线消息
-     * logout                   注销
-     * getUserPanel             获取用户面板
-     * chatPanelAdjust          调整聊天框位置
-     * codeBlockAdjust          代码块格式化调整
-     * imageAdjust              图片加载完成调整
-     * imgReader                截图上传
-     * pasteMsg                 剪贴板消息
-     */
-    name: 'Chatroom',
+    name: 'Chat',
     components: {
-        UserSettingModule,
-        SystemSettingModule,
         PanelRoomNoticeModule,
         PanelRoomInfoModule,
         PanelExpressionModule,
-        PanelUserInfoModule,
-        ContactsModule
+        PanelUserInfoModule,  
     },
-	data() {
-		return {
+    data () {
+        return {
             message: '',
             code: '',
             myPanel: {},
@@ -119,50 +59,41 @@ export default {
             expressionFlag: false,
             secretPanel: false,
             codeInputFlag: false,
-            userPanelFlag: false,
             loading: true,
             contactsPanelLock: false
-		}
+        }
     },
     watch: {
         currentChatData (res) {
             // 朕已阅
             socket.emit('message read', { readUser: this.userInfo.name, msgs: res });
-        }
+        },
+        chatPanelFlag (val) {
+            // 更新仓库歌词状态
+            this.$store.commit('UPDATE_LYRICSTATE', !this.chatPanelFlag)
+        },
+        roomNoticeFlag (val) {
+            this.$store.commit('UPDATE_GLOBALMASK', val);
+        },
+        roomInfoFlag (val) {
+            this.$store.commit('UPDATE_GLOBALMASK', val);
+        },
+        expressionFlag (val) {
+            this.$store.commit('UPDATE_GLOBALMASK', val);
+        },
+        codeInputFlag (val) {
+            this.$store.commit('UPDATE_GLOBALMASK', val);
+        },
     },
     computed: {
         userInfo () {
             return this.$store.state.userInfo || this.$store.state.touristInfo;
         },
-        mask () {
-            if(
-                this.userSettingFlag || 
-                this.systemSettingFlag || 
-                this.roomNoticeFlag ||
-                this.roomInfoFlag ||
-                this.expressionFlag ||
-                this.codeInputFlag ||
-                this.userPanelFlag
-            ) {
-                return true;
-            }else {
-                return false;
-            }
-        }  
+        userPanelState () {
+            return this.$store.state.userPanelState;
+        }
     },
-	methods: {
-        loadChatData () {
-
-        },
-        clearPanel () {
-            this.userSettingFlag = false;
-            this.systemSettingFlag = false;
-            this.roomNoticeFlag = false;
-            this.roomInfoFlag = false;
-            this.expressionFlag = false;
-            this.codeInputFlag = false;
-            this.userPanelFlag = false;
-        },
+    methods: {
         userInfoUpdate () {
             this.$store.commit('UPDATE_USERINFO', JSON.parse(localStorage.getItem('UserInfo')));
         },
@@ -336,7 +267,7 @@ export default {
             if(this.$store.state.touristInfo !== null) return touristTips(this);
             if(name.slice(0,2) === '游客') return;
             if(name !== this.userInfo.name) {
-                this.userPanelFlag = true;
+                this.$store.commit('UPDATE_USERPANELSTATE', true);
                 socket.emit('take userInfo', name);
             }else {
                 return;
@@ -462,196 +393,142 @@ export default {
         socket.emit('Offline noRead messages', this.userInfo.name);
     },
 	mounted() {
-        new SocketClient(this);
+        SocketClient.initAll(this);
 	},
     updated() {
-        console.log('更新了')
+        console.log('更新了');
     }
 }
 </script>
 
 <template>
-	<div class="chatroom">
-		<div class="windows">
-            <div class="background">
-                <div style="background-size: 1920px 1030px;background-image: url('/static/images/b.jpg');"></div>
-            </div>
-            <div v-show="mask" @click="clearPanel" class="mask-layout"></div>
-            <div class="chatRoom">
-                <header>
-                    <div class="logo">
-                        <img src="https://assets.suisuijiang.com/images/logo.b3e14.png">
+    <div class="body">
+        <div class="user-list">
+            <mu-list-item @click="contactsPanelLock = !contactsPanelLock" title="联系人"></mu-list-item>
+            <div v-for="(item,index) in userList" :key="index" @click="loadChatPanel(item)" class="user-list-item" :data-user="item.userID">
+                <img class="avatar-image" :src="item.avatar" alt="">
+                <div class="unread">{{ myUserListArr[item.userID].noRead }}</div>
+                <div class="content">
+                    <div>
+                        <p>{{ item.name }}</p>
+                        <p>{{ item.messageInfo.date }}</p>
                     </div>
-                    <div class="nav-list">
-                        <div class="nav-list-item selected" title="聊天">
-                            <i class="icon"></i>
-                        </div>
-                        <div @click="unfinished" class="nav-list-item " title="联系人">
-                            <i class="icon"></i>
-                        </div>
-                        <div @click="systemSettingFlag = true" class="nav-list-item " title="系统设置">
-                            <i class="icon"></i>
-                        </div>
-                    </div>
-                    <div class="user-panel">
-                        <div class="online" title="在线"></div>
-                        <div :style="`background-image: url(${userInfo.avatar})`" @click="getMyPanel" class="avatar-text" title="查看个人信息"></div>
-                    </div>
-                </header>
-                <div class="body">
-                    <div class="user-list">
-                        <mu-list-item @click="contactsPanelLock = !contactsPanelLock" title="联系人"></mu-list-item>
-                        <div v-for="(item,index) in userList" :key="index" @click="loadChatPanel(item)" class="user-list-item" :data-user="item.userID">
-                            <img class="avatar-image" :src="item.avatar" alt="">
-                            <div class="unread">{{ myUserListArr[item.userID].noRead }}</div>
-                            <div class="content">
-                                <div>
-                                    <p>{{ item.name }}</p>
-                                    <p>{{ item.messageInfo.date }}</p>
-                                </div>
-                                <div>
-                                    <p>{{ item.messageInfo.message }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="chatPanelFlag" class="empty-chat-panel" chat-type="empty"></div>
-                    <div v-else class="chat-panel" chat-type="">
-                        <div class="chat-panel-header">
-                            <div>
-                                <img class="avatar-image" :src="currentChatUserInfo.avatar" style="width: 40px; height: 40px; min-width: 40px; min-height: 40px;">
-                                <p>{{ currentChatUserInfo.name }}</p>
-                            </div>
-                            <div v-if="!secretPanel">
-                                <div @click="roomNoticeFlag = true" style="margin: auto 8px;" class="roomNotice">
-                                    <i class="icon" title="公告"></i></div>
-                                <div @click="roomInfoFlag = true" style="margin: auto 8px;" class="roomInfo">
-                                    <i class="icon" title="关于"></i></div>
-                            </div>
-                        </div>
-                        <div 
-                            ref="messageList" 
-                            v-loading="loading"
-                            element-loading-text="拼命加载中"
-                            element-loading-spinner="el-icon-loading"
-                            element-loading-background="rgba(0, 0, 0, 0.2)"
-                            class="message-list">
-                            <div v-for="(item,index) in currentChatData" :key="index" class="message-list-item">
-                                <div :class="{ 'message-self': item.from === userInfo.name }" class="native-message">
-                                    <img class="avatar-image user-icon" :src="item.avatar" :alt="item.avatar" @click="getUserPanel(item.from)" :data-username="item.from">
-                                    <div>
-                                        <div>
-                                            <span class="message-username">{{ item.from }}</span>
-                                            <span>{{ (new Date(item.date).format('hh:mm:ss')) }}</span>
-                                        </div>
-                                        <template>
-                                            <div v-if="item.type === 'code'" ref="codeBlock" class="code"><pre><code>{{ item.message }}</code></pre></div>
-                                            <div v-else-if="(item.type === 'expression') || (item.message.charAt(0) === '#')" class="text">
-                                                <div v-html="expressionProcess(item)"></div>
-                                            </div>
-                                            <div v-else-if="item.type === 'printscreen'" class="image" ref="preview">
-                                                <img :data-original="item.message" :src="item.message" onerror="this.src='/images/imgError.jpg'" style="max-height: 200px;">
-                                            </div>
-                                            <div v-else v-html="normalSmartProcess(item.message, item.type)">
-                                                
-                                            </div>
-                                        </template>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="toolbar">
-                            <div @click="expressionFlag = true">
-                                <i class="icon" title="表情"></i>
-                            </div>
-                            <div @click="unfinished">
-                                <i class="icon" title="图片"></i>
-                            </div>
-                            <div @click="codeInputFlag = true">
-                                <i class="icon" title="代码"></i>
-                            </div>
-                            <input type="file" class="image-input" accept="image/png,image/jpeg,image/gif">
-                        </div>
-                        <div class="input-box">
-                            <input 
-                                ref="inputMsg" 
-                                v-model="message" 
-                                @keyup.enter="sendMessage(message,'normal','message')" 
-                                @paste="pasteMsg"
-                                type="text" 
-                                placeholder="输入消息" 
-                                maxlength="1024">
-                        </div>
-                        <template v-if="!secretPanel">
-                            <transition name="silde-rightIn">
-                                <panel-room-notice-module v-show="roomNoticeFlag" @close="roomNoticeFlag = false"></panel-room-notice-module>
-                            </transition>
-                            <transition name="silde-rightIn">
-                                <panel-room-info-module 
-                                    v-show="roomInfoFlag"
-                                    :data="onlineUsers"
-                                    @startChat="getUserPanel"
-                                    @close="roomInfoFlag = false">
-                                </panel-room-info-module>
-                            </transition>
-                        </template>
-                        <transition name="scale">
-                            <panel-expression-module 
-                                v-show="expressionFlag" 
-                                @send="sendMessage" 
-                                @close="expressionFlag = false"
-                                @unfinished="unfinished"
-                                ></panel-expression-module>
-                        </transition>
-                        <transition name="scale">
-                            <div v-show="codeInputFlag" class="code-input">
-                                <textarea v-model="code" placeholder="输入要展示的代码"></textarea>
-                                <div>
-                                    <button @click="sendMessage(code,'code','code')" class="sendCode">发送</button>
-                                    <button @click="codeInputFlag = false" class="cancelCode">取消</button></div>
-                            </div>
-                        </transition>
-                        <transition name="scale">
-                            <panel-user-info-module 
-                                v-show="userPanelFlag" 
-                                :data="userPanelInfo" 
-                                @chat="loadChatPanel" 
-                                @close="userPanelFlag = false">
-                            </panel-user-info-module>
-                        </transition>
+                    <div>
+                        <p>{{ item.messageInfo.message }}</p>
                     </div>
                 </div>
-                <transition name="scale">
-                    <user-setting-module 
-                        v-show="userSettingFlag" 
-                        :data="myPanel" 
-                        @close="userSettingFlag = false"
-                        @updateAvtar="userInfoUpdate"
-                    ></user-setting-module>
-                </transition>
-                <transition name="scale">
-                    <system-setting-module 
-                    v-show="systemSettingFlag" 
-                    :data="systemConfig" 
-                    @close="systemSettingFlag = false"
-                    @logout="logout"
-                    ></system-setting-module>
-                </transition>
             </div>
         </div>
-		<div v-show="!chatPanelFlag" class="lyric_content">
-            <div class="description"></div>
+        <div v-if="chatPanelFlag" class="empty-chat-panel" chat-type="empty"></div>
+        <div v-else class="chat-panel" chat-type="">
+            <div class="chat-panel-header">
+                <div>
+                    <img class="avatar-image" :src="currentChatUserInfo.avatar" style="width: 40px; height: 40px; min-width: 40px; min-height: 40px;">
+                    <p>{{ currentChatUserInfo.name }}</p>
+                </div>
+                <div v-if="!secretPanel">
+                    <div @click="roomNoticeFlag = true" style="margin: auto 8px;" class="roomNotice">
+                        <i class="icon" title="公告"></i></div>
+                    <div @click="roomInfoFlag = true" style="margin: auto 8px;" class="roomInfo">
+                        <i class="icon" title="关于"></i></div>
+                </div>
+            </div>
+            <div 
+                ref="messageList" 
+                v-loading="loading"
+                element-loading-text="拼命加载中"
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.2)"
+                class="message-list">
+                <div v-for="(item,index) in currentChatData" :key="index" class="message-list-item">
+                    <div :class="{ 'message-self': item.from === userInfo.name }" class="native-message">
+                        <img class="avatar-image user-icon" :src="item.avatar" :alt="item.avatar" @click="getUserPanel(item.from)" :data-username="item.from">
+                        <div>
+                            <div>
+                                <span class="message-username">{{ item.from }}</span>
+                                <span>{{ (new Date(item.date).format('hh:mm:ss')) }}</span>
+                            </div>
+                            <template>
+                                <div v-if="item.type === 'code'" ref="codeBlock" class="code"><pre><code>{{ item.message }}</code></pre></div>
+                                <div v-else-if="(item.type === 'expression') || (item.message.charAt(0) === '#')" class="text">
+                                    <div v-html="expressionProcess(item)"></div>
+                                </div>
+                                <div v-else-if="item.type === 'printscreen'" class="image" ref="preview">
+                                    <img :data-original="item.message" :src="item.message" onerror="this.src='/images/imgError.jpg'" style="max-height: 200px;">
+                                </div>
+                                <div v-else v-html="normalSmartProcess(item.message, item.type)">
+                                    
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="toolbar">
+                <div @click="expressionFlag = true">
+                    <i class="icon" title="表情"></i>
+                </div>
+                <div @click="unfinished">
+                    <i class="icon" title="图片"></i>
+                </div>
+                <div @click="codeInputFlag = true">
+                    <i class="icon" title="代码"></i>
+                </div>
+                <input type="file" class="image-input" accept="image/png,image/jpeg,image/gif">
+            </div>
+            <div class="input-box">
+                <input 
+                    ref="inputMsg" 
+                    v-model="message" 
+                    @keyup.enter="sendMessage(message,'normal','message')" 
+                    @paste="pasteMsg"
+                    type="text" 
+                    placeholder="输入消息" 
+                    maxlength="1024">
+            </div>
+            <template v-if="!secretPanel">
+                <transition name="silde-rightIn">
+                    <panel-room-notice-module v-show="roomNoticeFlag" @close="roomNoticeFlag = false"></panel-room-notice-module>
+                </transition>
+                <transition name="silde-rightIn">
+                    <panel-room-info-module 
+                        v-show="roomInfoFlag"
+                        :data="onlineUsers"
+                        @startChat="getUserPanel"
+                        @close="roomInfoFlag = false">
+                    </panel-room-info-module>
+                </transition>
+            </template>
+            <transition name="scale">
+                <panel-expression-module 
+                    v-show="expressionFlag" 
+                    @send="sendMessage" 
+                    @close="expressionFlag = false"
+                    @unfinished="unfinished"
+                    ></panel-expression-module>
+            </transition>
+            <transition name="scale">
+                <div v-show="codeInputFlag" class="code-input">
+                    <textarea v-model="code" placeholder="输入要展示的代码"></textarea>
+                    <div>
+                        <button @click="sendMessage(code,'code','code')" class="sendCode">发送</button>
+                        <button @click="codeInputFlag = false" class="cancelCode">取消</button></div>
+                </div>
+            </transition>
+            <transition name="scale">
+                <panel-user-info-module 
+                    v-show="userPanelState" 
+                    :data="userPanelInfo" 
+                    @chat="loadChatPanel" 
+                    @close="$store.commit('UPDATE_USERPANELSTATE', false);">
+                </panel-user-info-module>
+            </transition>
         </div>
-
-        <contacts-module :lock="contactsPanelLock"></contacts-module>
-
-	</div>
+    </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @import '../styles/transition.scss';
-.chatroom {
-	width: 100%;
-    height: 100%;
-}
+
 </style>
+

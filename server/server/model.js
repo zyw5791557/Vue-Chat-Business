@@ -1,9 +1,18 @@
-// 数据模型
+/**
+ * @requires
+ * mongoose                 mongodb 操作库
+ * 
+ * @db table model
+ * UserSchema               用户集合
+ * LoginStateSchema         用户登录记录集合
+ * MessagesSchema           消息记录集合
+ * UserContactsSchema       用户联系人集合
+ * 
+ */
+const mongoose = require('mongoose');
 
-var mongoose = require('mongoose');
-// 用户集合
 
-var UserSchema = new mongoose.Schema({  // 定义数据模型
+const UserSchema = new mongoose.Schema({  
     name: String,
     pwd: String,
     avatar: String,
@@ -16,12 +25,11 @@ var UserSchema = new mongoose.Schema({  // 定义数据模型
     github: String,
     qq: String
 });
-mongoose.model('users', UserSchema);       // 将该 Schema 发布为 Model, 第一个参数为数据库的集合, 没有会自动创建
+// 将该 Schema 发布为 Model, 第一个参数为数据库的集合, 没有会自动创建
+mongoose.model('users', UserSchema);       
 
 
-// 用户登录记录集合
-
-var LoginStateSchema = new mongoose.Schema({
+const LoginStateSchema = new mongoose.Schema({
     user: String,
     date: Number,
     remoteAddress: String,
@@ -29,9 +37,7 @@ var LoginStateSchema = new mongoose.Schema({
 mongoose.model('userLoginState', LoginStateSchema);
 
 
-// 消息记录集合
-
-var MessagesSchema = new mongoose.Schema({
+const MessagesSchema = new mongoose.Schema({
     from: String,
     avatar: String,
     to: String,
@@ -41,3 +47,10 @@ var MessagesSchema = new mongoose.Schema({
     read: Boolean
 });
 mongoose.model('messages', MessagesSchema);
+
+
+const UserContactsSchema = new mongoose.Schema({
+    user: String,
+    contacts: Array
+});
+mongoose.model('userContacts', UserContactsSchema);

@@ -1502,7 +1502,12 @@ header {
 .expression .default-expression>div {
     width: 40px;
     height: 40px;
-    padding: 5px
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 1);
+    transition: all .5s;
+}
+.expression .default-expression>div:hover {
+    background-color: rgba(0, 0, 0, .1);
 }
 
 .expression .default-expression>div>div {
@@ -2029,8 +2034,19 @@ img[src="/images/imgError.jpg"] {
     max-height: 100px !important;
 }
 
+/* 溢出省略 */
 .text-ellipsis {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.text-ellipsis-2 {
+    text-overflow: ellipsis;
+    word-break: break-word;
+    text-overflow: -o-ellipsis-lastline;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }

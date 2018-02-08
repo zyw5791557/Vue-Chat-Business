@@ -47,7 +47,7 @@ export default {
                 data: {
                     name: this.form.username,
                     pwd: this.form.password,
-                    avatar: "http://static.emlice.top/images/users/default.png",
+                    avatar: this.$STATIC_URL + "/images/users/default.png",
                     sex: 'male',
                     birthday: '2017-12-25',
                     place: '',
@@ -61,7 +61,7 @@ export default {
                     // 注册成功
                     var userData = {
                     	name: this.form.username,
-                    	avatar: "http://static.emlice.top/images/users/default.png",
+                    	avatar: this.$STATIC_URL + "/images/users/default.png",
                     	sex: 'male',
                     	birthday: '2017-12-25',
                     	place: '',
@@ -77,7 +77,7 @@ export default {
                         localStorage.setItem('UserInfo', JSON.stringify(userData));
                         localStorage.setItem('Duration', 1);
                         this.$store.commit('UPDATE_USERINFO', JSON.parse(localStorage.getItem('UserInfo')));
-                        this.$router.push({ name: 'Chatroom' });
+                        this.$router.push({ name: 'Chat' });
                     }, 1000);
                 } else if (c === 1) {
                     // 账号已存在, 请重新输入一个账号

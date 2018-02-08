@@ -36,7 +36,7 @@ export default {
             <div class="userList">
                 <div v-for="(item, index) in loadData" :key="index" @click="$emit('startChat', item.name),$emit('close');" :data-user="item.name">
                     <img class="avatar-image" :src="item.avatar" style="width: 40px; height: 40px; min-width: 40px; min-height: 40px;">
-                    <span class="text-ellipsis">{{ item.name }}</span>
+                    <span class="text-ellipsis-2">{{ item.name }}</span>
                 </div>
             </div>
             <input type="file" accept="image/*"></div>

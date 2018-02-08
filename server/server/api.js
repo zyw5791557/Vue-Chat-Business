@@ -1,29 +1,67 @@
-var express = require('express');
-var app = express();
-var mongoose = require('mongoose');
+/**
+ * @requires - 依赖
+ * express              服务器框架
+ * mongoose             数据库操作
+ * body-parser          参数解析
+ * 
+ * @node-module - node 模块加载        
+ * http                 
+ * url
+ * crypto
+ * 
+ * @db table model
+ * User                 用户数据模型
+ * Messages             聊天记录数据模型
+ * LoginState           用户登录记录数据模型
+ * 
+ * @config - 配置文件
+ * config
+ * 
+ * @constant - 常量
+ * api                  api prefix
+ * $salt                加盐
+ * STATIC_SERVER        静态资源服务器地址配置
+ * 
+ * @function - 函数
+ * PostCallbackData     配置登录逻辑函数
+ * 
+ * @api - 接口
+ * '/api/login'         登录
+ * '/api/register'      注册
+ * '/api/userEdit'      用户信息更新
+ * '/api/imgload'       图片防盗链处理
+ * 
+ */
+
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
 require('./connect.js');
 require('./model.js');
-// User 为 model name
-var User = mongoose.model('users');
-// 获取 messages 集合并指向 Messages 
-var Messages = mongoose.model('messages');
-var LoginState = mongoose.model('userLoginState');
-mongoose.Promise = global.Promise;  // 为了避免警告的出现, 因为 mongoose 的默认 promise 已经弃用了。
 
-var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: false }))
+// 引入配置文件
+const config = require('../config');
 
-var http = require('http');
-var url = require('url');
+const User = mongoose.model('users');
+const Messages = mongoose.model('messages');
+const LoginState = mongoose.model('userLoginState');
+const UserContacts = mongoose.model('userContacts');
+
+mongoose.Promise = global.Promise;                       // 为了避免警告的出现, 因为 mongoose 的默认 promise 已经弃用了。
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+
+const http = require('http');
+const url = require('url');
 
 
 // 加密
-var crypto = require('crypto');
-var $salt = '^ThisisEmliceChat$';           // 简单的静态加盐
+const crypto = require('crypto');
+const $salt = config.$salt;                        
 
 // 静态资源服务器地址配置
-// var STATIC_SERVER = "http://localhost:8989";        // 本地测试地址
-var STATIC_SERVER = "http://static.emlice.top";        // 服务器地址
+const STATIC_SERVER = config.STATIC_SERVER;
 
 
 // 配置登录逻辑

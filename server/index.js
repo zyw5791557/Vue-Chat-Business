@@ -5,7 +5,7 @@ const io = require('socket.io')(http);
 const path = require('path');
 
 // 引入配置文件
-const config = require('./config/config.js');
+const config = require('./config');
 // 权限列表
 $permissionArr = config.permissionArr;
 
