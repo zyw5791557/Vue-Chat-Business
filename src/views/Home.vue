@@ -80,7 +80,7 @@ export default {
     watch: {
         currentChatData (res) {
             // 朕已阅
-            socket.emit('message read', { readUser: this.userInfo.name, msgs: res });
+            this.$socket.emit('message read', { readUser: this.userInfo.name, msgs: res });
         }
     },
     computed: {
@@ -110,21 +110,23 @@ export default {
         getMyPanel () {
             if(this.$store.state.touristInfo !== null) return touristTips(this);
             this.$store.commit('UPDATE_USERSETTINGSTATE', true);
-            socket.emit('take userInfo', this.userInfo.name);
+            this.$socket.emit('take userInfo', this.userInfo.name);
         },
         unfinished () {
             this.$notify.info({ title: '消息', message: '暂未开放' });
         },
         logout () {
-            socket.emit('logout', this.userInfo.name);
+            this.$socket.emit('logout', this.userInfo.name);
             localStorage.removeItem('UserInfo');
             localStorage.removeItem('TouristInfo');
             this.$router.push({ name: 'Login' });
+            this.$store.commit('UPDATE_SYSTEMSETTINGSTATE', false);
+            this.$socket.disconnect();
         }
     },
     created () {
         // 用户权限检查
-        socket.emit('check permission', this.userInfo.name);
+        this.$socket.emit('check permission', this.userInfo.name);
     },
 	mounted() {
         SocketClient.takeUserInfoOn(this);

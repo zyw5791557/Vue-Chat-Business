@@ -59,7 +59,7 @@ export default {
     watch: {
         currentChatData (res) {
             // 朕已阅
-            socket.emit('message read', { readUser: this.userInfo.name, msgs: res });
+            this.$socket.emit('message read', { readUser: this.userInfo.name, msgs: res });
         },
         chatPanelFlag (val) {
             // 更新仓库歌词状态
@@ -93,7 +93,7 @@ export default {
         getMyPanel () {
             if(this.$store.state.touristInfo !== null) return touristTips(this);
             this.userSettingFlag = true;
-            socket.emit('take userInfo', this.userInfo.name);
+            this.$socket.emit('take userInfo', this.userInfo.name);
         },
         loadChatPanel (item) {
             console.log('加载聊天面板', item)
@@ -243,15 +243,15 @@ export default {
                 read: false,
             }
             console.log('消息', msg);
-            socket.emit('message', msg);
+            this.$socket.emit('message', msg);
             this[clear] = '';
             if(clear === 'code') this.$store.commit('UPDATE_CODEINPUTSTATE', false);
         },
         takeMessage (o) {
-            socket.emit('take messages', o);
+            this.$socket.emit('take messages', o);
         },
         logout () {
-            socket.emit('logout', this.userInfo.name);
+            this.$socket.emit('logout', this.userInfo.name);
             localStorage.removeItem('UserInfo');
             localStorage.removeItem('TouristInfo');
             this.$router.push({ name: 'Login' });
@@ -261,7 +261,7 @@ export default {
             if(name.slice(0,2) === '游客') return;
             if(name !== this.userInfo.name) {
                 this.$store.commit('UPDATE_USERPANELSTATE', true);
-                socket.emit('take userInfo', name);
+                this.$socket.emit('take userInfo', name);
             }else {
                 return;
             }
@@ -354,7 +354,7 @@ export default {
                         date: new Date().getTime(),
                         read: false,
                     }
-                    socket.emit('message', msg);
+                    this.$socket.emit('message', msg);
                 } else if (Code === -1) {
                     this.$notify.error({
                         title: '错误',
@@ -381,9 +381,9 @@ export default {
     },
     created () {
         // 用户权限检查
-        socket.emit('check permission', this.userInfo.name);
+        this.$socket.emit('check permission', this.userInfo.name);
         // 检查离线状态下的未读消息, 初始化
-        socket.emit('Offline noRead messages', this.userInfo.name);
+        this.$socket.emit('Offline noRead messages', this.userInfo.name);
     },
 	mounted() {
         SocketClient.initAll(this);

@@ -18,8 +18,8 @@ import * as types from './mutation-types';
  * CHECK_GLOBALMASK						检查全局蒙版状态
  */
 
- function CHECK_GLOBALMASK ($state) {
-	if(
+function CHECK_GLOBALMASK($state) {
+	if (
 		$state.userSettingState ||
 		$state.systemSettingState ||
 		$state.userPanelState ||
@@ -32,20 +32,21 @@ import * as types from './mutation-types';
 	} else {
 		$state.globalMask = false;
 	}
- }
+}
+
 
 const mutations = {
 
-	[types.UPDATE_USERINFO] (state, data) {
+	[types.UPDATE_USERINFO](state, data) {
 		state.userInfo = data;
 	},
 
-	[types.UPDATE_TOURISTINFO] (state, data) {
+	[types.UPDATE_TOURISTINFO](state, data) {
 		state.touristInfo = data;
 	},
 
-	[types.UPDATE_GLOBALMASK] (state, boolean) {
-		if(!boolean) {
+	[types.UPDATE_GLOBALMASK](state, boolean) {
+		if (!boolean) {
 			state.userSettingState = false;
 			state.systemSettingState = false;
 			state.userPanelState = false;
@@ -57,43 +58,43 @@ const mutations = {
 		state.globalMask = boolean;
 	},
 
-	[types.UPDATE_USERSETTINGSTATE] (state, boolean) {
+	[types.UPDATE_USERSETTINGSTATE](state, boolean) {
 		state.userSettingState = boolean;
 		CHECK_GLOBALMASK(state);
 
 	},
 
-	[types.UPDATE_SYSTEMSETTINGSTATE] (state, boolean) {
+	[types.UPDATE_SYSTEMSETTINGSTATE](state, boolean) {
 		state.systemSettingState = boolean;
 		CHECK_GLOBALMASK(state);
 	},
 
-	[types.UPDATE_USERPANELSTATE] (state, boolean) {
+	[types.UPDATE_USERPANELSTATE](state, boolean) {
 		state.userPanelState = boolean;
 		CHECK_GLOBALMASK(state);
 	},
 
-	[types.UPDATE_ROOMNOTICESTATE] (state, boolean) {
+	[types.UPDATE_ROOMNOTICESTATE](state, boolean) {
 		state.roomNoticeState = boolean;
 		CHECK_GLOBALMASK(state);
 	},
 
-	[types.UPDATE_ROOMINFOSTATE] (state, boolean) {
+	[types.UPDATE_ROOMINFOSTATE](state, boolean) {
 		state.roomInfoState = boolean;
 		CHECK_GLOBALMASK(state);
 	},
 
-	[types.UPDATE_EXPRESSIONSTATE] (state, boolean) {
+	[types.UPDATE_EXPRESSIONSTATE](state, boolean) {
 		state.expressionState = boolean;
 		CHECK_GLOBALMASK(state);
 	},
 
-	[types.UPDATE_CODEINPUTSTATE] (state, boolean) {
+	[types.UPDATE_CODEINPUTSTATE](state, boolean) {
 		state.codeInputState = boolean;
 		CHECK_GLOBALMASK(state);
 	},
 
-	[types.UPDATE_LYRICSTATE] (state, boolean) {
+	[types.UPDATE_LYRICSTATE](state, boolean) {
 		state.lyricState = boolean;
 	},
 

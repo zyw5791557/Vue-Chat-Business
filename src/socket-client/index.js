@@ -1,6 +1,7 @@
 
 function desktopRemind (res, $this) {
-    console.log('桌面提醒啊啊啊')
+    console.log('桌面提醒啊啊啊');
+    console.log(res[0].from, $this.userInfo.name);
     if (res[0].from !== $this.userInfo.name) {
         var d = JSON.parse(localStorage.getItem('desktopNotification'));
         var s = JSON.parse(localStorage.getItem('soundNotification'));
@@ -80,18 +81,18 @@ class SocketClient {
     }
     // 用户加入
     static userJoinEmit ($this) {
-        socket.emit('user join', $this.userInfo.name);
+        $this.$socket.emit('user join', $this.userInfo.name);
     }
     // 接受用户数
     static userJoinOn ($this) {
-        socket.on('user join', data => {
+        $this.$socket.on('user join', data => {
             console.log(data)
             $this.onlineUsers = data;
         });
     }
     // 接受历史记录
     static takeMessageOn ($this) {
-        socket.on('take messages',  data => {
+        $this.$socket.on('take messages',  data => {
             console.log('历史记录：', data);
             $this.loading = false;
             $this.currentChatData = data;
@@ -106,7 +107,7 @@ class SocketClient {
     }
     // 接收 message
     static messagesOn ($this) {
-        socket.on('message', data => {
+        $this.$socket.on('message', data => {
             console.log('消息',data);
             // 渲染未读消息
             noReadMsgRender(data, $this);
@@ -142,7 +143,7 @@ class SocketClient {
     }
     // 接受用户名片
     static takeUserInfoOn ($this) {
-        socket.on('take userInfo', res => {
+        $this.$socket.on('take userInfo', res => {
             console.log(res);
             if(res.Data.name !== $this.userInfo.name) {
                 $this.userPanelInfo = res;
@@ -153,7 +154,7 @@ class SocketClient {
     }
     // 权限检查
     static checkPermissionOn ($this) {
-        socket.on('check permission', f => {
+        $this.$socket.on('check permission', f => {
             if(f) {
                 $this.systemConfig.clearDataLock = false;
             }
@@ -161,7 +162,7 @@ class SocketClient {
     }
     // 接受离线消息未读条数
     static offlineNoReadMessagesOn ($this) {
-        socket.on('Offline noRead messages',  res => {
+        $this.$socket.on('Offline noRead messages',  res => {
             console.log('渲染离线消息',res);
             var currentUser = $this.currentChatUserInfo.userID;
             var fromArr = {};
