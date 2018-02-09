@@ -16,8 +16,5 @@
     "mongoose": "4.12.1",
     "socket.io": "2.0.3"
   },
-  "devDependencies": {
-    "socket.io": "2.0.3",
-    "uninstall": "0.0.0"
-  }
+  "devDependencies": {}
 }
