@@ -1,7 +1,6 @@
 
 function desktopRemind (res, $this) {
     console.log('桌面提醒啊啊啊');
-    console.log(res[0].from, $this.userInfo.name);
     if (res[0].from !== $this.userInfo.name) {
         var d = JSON.parse(localStorage.getItem('desktopNotification'));
         var s = JSON.parse(localStorage.getItem('soundNotification'));
@@ -69,12 +68,17 @@ function noReadMsgRender (res, $this) {
 }
 
 
+/**
+ * 
+ */
+
 class SocketClient {
     static initAll ($this) {
         this.userJoinEmit($this);
         this.userJoinOn($this);
         this.takeMessageOn($this);
         this.messagesOn($this);
+        this.desktopRemind($this);
         this.takeUserInfoOn($this);
         this.checkPermissionOn($this);
         this.offlineNoReadMessagesOn($this);
@@ -137,10 +141,16 @@ class SocketClient {
                 $this.imageAdjust();
                 $this.imagePreview();
             });
+        });
+    }
+
+    static desktopRemind ($this) {
+        $this.$socket.on('desktopRemind', data => {
             // 桌面提醒
             desktopRemind(data, $this);
         });
     }
+
     // 接受用户名片
     static takeUserInfoOn ($this) {
         $this.$socket.on('take userInfo', res => {

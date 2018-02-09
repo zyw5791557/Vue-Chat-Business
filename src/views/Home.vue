@@ -121,7 +121,6 @@ export default {
             localStorage.removeItem('TouristInfo');
             this.$router.push({ name: 'Login' });
             this.$store.commit('UPDATE_SYSTEMSETTINGSTATE', false);
-            this.$socket.disconnect();
         }
     },
     created () {
