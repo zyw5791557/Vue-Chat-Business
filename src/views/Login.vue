@@ -71,9 +71,11 @@ export default {
         }
     },
     mounted () {
+        this.$socket.reconnection(true);
         // 更新仓库用户信息状态
         this.$store.commit('UPDATE_USERINFO', JSON.parse(localStorage.getItem('UserInfo')));
         this.$store.commit('UPDATE_TOURISTINFO', JSON.parse(localStorage.getItem('TouristInfo')));
+        console.log(this.$socket.id)
     }
 }
 </script>

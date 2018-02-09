@@ -31,6 +31,16 @@ Vue.use(api);
 // 配置文件
 import config from './config';
 
+// 连接到远程socket地址。
+const SOCKET_URL = 'http://localhost:3000';
+const socket = io.connect(SOCKET_URL, {
+	forceNew: true,
+	reconnection : true
+});
+
+Vue.prototype.$socket = socket;
+
+
 // 资源服务器地址
 Vue.prototype.$STATIC_URL = config.$STATIC_URL;
 
