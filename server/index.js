@@ -165,11 +165,12 @@ io.on('connection', function(socket) {
         var r = [];
         r.push(res);
         if(to === 'all') {
-            io.emit('message',r);     // 全体发送
+            io.emit('message',r);                           // 全体发送
         }else {
-            users[to] && users[to].emit('message',r);   // 只对特别的人发送
+            users[to] && users[to].emit('message',r);       // 只对特别的人发送
             users[from] && users[from].emit('message',r);
         }
+        socket.broadcast.emit('desktopRemind', r);          // 桌面提醒
     });
 
     // 监听调取messages
