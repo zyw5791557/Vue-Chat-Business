@@ -51,6 +51,7 @@
     "sass-loader": "^6.0.6",
     "semver": "^5.4.1",
     "shelljs": "^0.7.8",
+    "socket.io": "2.0.4",
     "url-loader": "^0.6.2",
     "vue-loader": "^13.6.1",
     "vue-style-loader": "^3.0.3",
