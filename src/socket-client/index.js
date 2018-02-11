@@ -1,7 +1,16 @@
 
+/**
+ * @function
+ * desktopRemind                桌面提醒
+ * noReadMsgRender              未读消息渲染
+ */
+
 function desktopRemind (res, $this) {
     console.log('桌面提醒啊啊啊');
-    if (res[0].from !== $this.userInfo.name) {
+    const storeUser = $this.$store.state.userInfo !== null ? $this.$store.state.userInfo.name : $this.$store.state.touristInfo.name;
+    const cacheUser = $this.userInfo.name;
+    const flag = storeUser === cacheUser;
+    if (res[0].from !== $this.userInfo.name && flag) {
         var d = JSON.parse(localStorage.getItem('desktopNotification'));
         var s = JSON.parse(localStorage.getItem('soundNotification'));
         if (s) {
@@ -69,33 +78,56 @@ function noReadMsgRender (res, $this) {
 
 
 /**
+ * @class 
+ * SocketClient                 socket-client
  * 
+ * @class SocketClient static funciton
+ * initAll                      初始化所有客户端事件
+ * connectOn                    监听连接状态
+ * disconnectOn                 监听断线状态
+ * userJoinEmit                 用户加入 | emit
+ * userJoinOn                   用户加入 | on
+ * takeMessageOn                获取历史消息 | on
+ * messagesOn                   获取实时消息 | on
+ * desktopRemind                桌面提醒 | on
+ * takeUserInfoOn               获取用户信息 | on
+ * checkPermissionOn            检查用户权限 | on
+ * offlineNoReadMessagesOn      查看离线消息 | on
  */
 
 class SocketClient {
-    static initAll ($this) {
+    initChat ($this) {
         this.userJoinEmit($this);
         this.userJoinOn($this);
         this.takeMessageOn($this);
         this.messagesOn($this);
         this.desktopRemind($this);
         this.takeUserInfoOn($this);
-        this.checkPermissionOn($this);
         this.offlineNoReadMessagesOn($this);
     }
+    connectOn ($this) {
+        $this.$socket.on('connect',() => {
+            $this.$store.commit('UPDATE_CONNECTSTATE', true);
+        })
+    }
+    disconnectOn ($this) {
+        $this.$socket.on('disconnect',() => {
+            $this.$store.commit('UPDATE_CONNECTSTATE', false);
+        })
+    }
     // 用户加入
-    static userJoinEmit ($this) {
+    userJoinEmit ($this) {
         $this.$socket.emit('user join', $this.userInfo.name);
     }
     // 接受用户数
-    static userJoinOn ($this) {
+    userJoinOn ($this) {
         $this.$socket.on('user join', data => {
             console.log(data)
             $this.onlineUsers = data;
         });
     }
     // 接受历史记录
-    static takeMessageOn ($this) {
+    takeMessageOn ($this) {
         $this.$socket.on('take messages',  data => {
             console.log('历史记录：', data);
             $this.loading = false;
@@ -110,7 +142,7 @@ class SocketClient {
         });
     }
     // 接收 message
-    static messagesOn ($this) {
+    messagesOn ($this) {
         $this.$socket.on('message', data => {
             console.log('消息',data);
             // 渲染未读消息
@@ -144,7 +176,7 @@ class SocketClient {
         });
     }
 
-    static desktopRemind ($this) {
+    desktopRemind ($this) {
         $this.$socket.on('desktopRemind', data => {
             // 桌面提醒
             desktopRemind(data, $this);
@@ -152,7 +184,7 @@ class SocketClient {
     }
 
     // 接受用户名片
-    static takeUserInfoOn ($this) {
+    takeUserInfoOn ($this) {
         $this.$socket.on('take userInfo', res => {
             console.log(res);
             if(res.Data.name !== $this.userInfo.name) {
@@ -163,7 +195,7 @@ class SocketClient {
         });
     }
     // 权限检查
-    static checkPermissionOn ($this) {
+    checkPermissionOn ($this) {
         $this.$socket.on('check permission', f => {
             if(f) {
                 $this.systemConfig.clearDataLock = false;
@@ -171,7 +203,7 @@ class SocketClient {
         });
     }
     // 接受离线消息未读条数
-    static offlineNoReadMessagesOn ($this) {
+    offlineNoReadMessagesOn ($this) {
         $this.$socket.on('Offline noRead messages',  res => {
             console.log('渲染离线消息',res);
             var currentUser = $this.currentChatUserInfo.userID;

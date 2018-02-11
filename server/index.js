@@ -90,6 +90,7 @@ io.on('connection', function(socket) {
     socket.on('disconnect', function() {
         if(username === undefined) return;
         delete users[username];
+        console.log('当前聊天室用户 | 离开时触发', Object.keys(users));
         console.log(username + '离开了聊天室');
         emitOnlineUser(users);          // 用户退出刷新在线用户信息
     });
@@ -154,7 +155,7 @@ io.on('connection', function(socket) {
 
     socket.on('message', function(res) {
         console.log('消息',res);
-        console.log('当前聊天室用户', Object.keys(users));
+        console.log('当前聊天室用户 | 发送消息时触发', Object.keys(users));
         // 把消息保存到数据库
         res.date = Date.now();
         var msg = new Messages(res);

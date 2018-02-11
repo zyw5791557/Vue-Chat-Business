@@ -1,5 +1,6 @@
 /**
 * @constant state - Vuex状态
+* connectState			连接状态 | 默认 true
 * userInfo				用户信息
 * touristInfo			游客信息
 * globalMask			全局蒙版
@@ -12,9 +13,11 @@
 * roomInfoState			聊天室信息窗口状态
 * expressionState		表情界面状态
 * codeInputState		代码输入窗口状态
+* contactsPanelState	联系人
 **/
 
 const state = {
+	connectState: true,
 	userInfo: JSON.parse(localStorage.getItem('UserInfo')),
 	touristInfo: JSON.parse(localStorage.getItem('TouristInfo')),
 	globalMask: false,
@@ -26,6 +29,7 @@ const state = {
 	roomInfoState: false,
 	expressionState: false,
 	codeInputState: false,
+	contactsPanelState: false,
 	expression: {
 		baidu: {
 			space: 30,

@@ -46,7 +46,7 @@ export default {
     <div class="user-info" v-if="loadData.Data">
         <div>
             <i @click="$emit('close')" class="icon"></i>
-            <div class="background-image" style="background-image: url('/static/images/b.jpg');"></div>
+            <div class="background-image" :style="`background-image: url(${loadData.Data.avatar});`"></div>
             <div class="background-mask"></div>
             <div class="content"><img class="avatar-image" :src="loadData.Data.avatar"
                     style="width: 80px; height: 80px; min-width: 80px; min-height: 80px;"><span>{{ loadData.Data.name }}</span>

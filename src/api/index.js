@@ -15,7 +15,7 @@ export default{
 				// 删除聊天数据
 				deleteChatData: '/upload/clearData',
 				// 截图上传
-				'printscreen': '/upload/ps_upload'
+				'printscreen': '/upload/ps_upload',
 			}
 			let params = {};
 			params.url = api_port[api];
