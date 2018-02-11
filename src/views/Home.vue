@@ -16,6 +16,7 @@ export default {
      * @data        - 状态
      * myPanel                  我的面板信息
      * systemConfig             系统设置配置项
+     * backgroundSize           背景大小
      * 
      * @computed    - 计算属性
      * connectState             连接状态
@@ -28,6 +29,7 @@ export default {
      * 
      * @methods     - 方法
      * initBackgroundSize       初始化背景大小设置
+     * winResize                窗口调整事件处理
      * clearPanel               清除所有面板状态
      * userInfoUpdate           更新用户信息
      * getMyPanel               获取用户面板
@@ -54,7 +56,8 @@ export default {
                 SOURCE_CODE: 'https://github.com/zyw5791557/EmliceChat',
                 WEB_SITE: 'https://www.emlice.top',
                 clearDataLock: true
-            }
+            },
+            backgroundSize: ''
 		}
     },
     watch: {
@@ -90,7 +93,12 @@ export default {
         initBackgroundSize () {
             const w = document.body.clientWidth;
             const h = document.body.clientHeight;
-            return `background-size: ${w}px ${h}px`
+            this.backgroundSize = `${w}px ${h}px`;
+        },
+        winResize () {
+            window.onresize = () => {
+                this.initBackgroundSize();
+            };
         },
         clearPanel () {
             this.$store.commit('UPDATE_GLOBALMASK', false);
@@ -120,6 +128,10 @@ export default {
         this.$socket.emit('check permission', this.userInfo.name);
     },
 	mounted() {
+        // 初始化 backgroundSize 的值
+        this.initBackgroundSize();
+        // window.onresize 调整
+        this.winResize();
         // Socket-Client
         const socketClient = new this.$SocketClient();
         socketClient.takeUserInfoOn(this);
@@ -135,8 +147,8 @@ export default {
 <template>
 	<div class="chatroom">
 		<div class="windows">
-            <div :style="initBackgroundSize()" class="background">
-                <div :style="initBackgroundSize()" class="background-mask"></div>
+            <div :style="{ backgroundSize: backgroundSize }" class="background">
+                <div :style="{ backgroundSize: backgroundSize }" class="background-mask"></div>
             </div>
             <div v-show="mask" @click="clearPanel" class="mask-layout"></div>
             <div class="chatRoom">
