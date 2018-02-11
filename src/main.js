@@ -10,6 +10,7 @@ Vue.use(ElementUI);
 // 引入 Muse UI 
 import MuseUI from 'muse-ui';
 import 'muse-ui/dist/muse-ui.css';
+import 'muse-ui/dist/theme-carbon.css' // 使用 carbon 主题
 Vue.use(MuseUI);
 
 // 引入已配置的 Vuex 仓库
@@ -34,12 +35,15 @@ import config from './config';
 
 // 连接到远程socket地址。
 import io from 'socket.io-client';
-const SOCKET_URL = 'http://localhost:3000';
+import SocketClient from './socket-client';
+const SOCKET_URL = config.$SOCKET_URL;
 const socket = io.connect(SOCKET_URL, {
 	reconnection : true
 });
 
 Vue.prototype.$socket = socket;
+
+Vue.prototype.$SocketClient = SocketClient;
 
 
 // 资源服务器地址

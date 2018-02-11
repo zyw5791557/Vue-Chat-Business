@@ -1,6 +1,8 @@
 // Muse UI modification
 
+@import './common/style';
+
 .mu-appbar {
-    background-color: #03a9f4;
+    background-color: $Base-background;
     height: 80px;
 }

@@ -2,6 +2,7 @@ import * as types from './mutation-types';
 
 /**
  * @mutations
+ * UPDATE_CONNECTSTATE					更新连接状态
  * UPDATE_USERINFO						更新登录用户信息
  * UPDATE_TOURISTINFO					更新游客信息
  * UPDATE_GLOBALMASK					更新全局蒙版
@@ -13,6 +14,8 @@ import * as types from './mutation-types';
  * UPDATE_ROOMINFOSTATE         		更新聊天室信息窗口状态
  * UPDATE_EXPRESSIONSTATE       		更新表情界面状态
  * UPDATE_CODEINPUTSTATE        		更新代码输入窗口状态
+ * UPDATE_CONTACTSPANELSTATE			更新联系人面板
+ * 
  * 
  * @function - 函数
  * CHECK_GLOBALMASK						检查全局蒙版状态
@@ -36,6 +39,10 @@ function CHECK_GLOBALMASK($state) {
 
 
 const mutations = {
+
+	[types.UPDATE_CONNECTSTATE](state, boolean) {
+		state.connectState = boolean;
+	},
 
 	[types.UPDATE_USERINFO](state, data) {
 		state.userInfo = data;
@@ -96,6 +103,10 @@ const mutations = {
 
 	[types.UPDATE_LYRICSTATE](state, boolean) {
 		state.lyricState = boolean;
+	},
+
+	[types.UPDATE_CONTACTSPANELSTATE](state) {
+		state.contactsPanelState = !state.contactsPanelState;
 	},
 
 };

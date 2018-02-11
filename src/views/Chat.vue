@@ -1,12 +1,73 @@
 <script>
 import Date from '@/common/js/dateTools.js';
 import { touristTips } from '@/common/js/util.js';
-import SocketClient from '@/socket-client';
 import PanelRoomNoticeModule from '@/components/PanelRoomNoticeModule';
 import PanelRoomInfoModule from '@/components/PanelRoomInfoModule';
 import PanelExpressionModule from '@/components/PanelExpressionModule';
 import PanelUserInfoModule from '@/components/PanelUserInfoModule';
 export default {
+    /**
+     * @function    - 函数
+     * Date                     添加 Date 方法到 Date 原型中
+     * touristTips              游客提示
+     * 
+     * @components  - 组件注册
+     * PanelRoomNoticeModule    群聊公告面板
+     * PanelRoomInfoModule      群聊信息面板
+     * PanelExpressionModule    表情模块
+     * PanelUserInfoModule      用户信息面板
+     * 
+     * @data        - 状态
+     * userInfo                 用户信息
+     * duration                 注册时长
+     * onlineUsers              所用在线用户面板
+     * myUserListArr            我的临时会话集合
+     * currentChatData          当前聊天窗口的消息
+     * chatGroup                群聊组
+     * userList                 用户列表
+     * currentChatUserInfo      当前聊天窗口用户信息
+     * userPanelInfo            用户面板信息
+     * chatPanelFlag            聊天面板状态
+     * secretPanel              是否为私聊窗口
+     * loading                  loading
+     * 
+     * @watch       - 被监听的状态
+     * currentChatData          变动 | 查阅
+     * chatPanelFlag            变动 | 歌词状态
+     * 
+     * @computed    - 计算属性
+     * userInfo                 用户信息
+     * userPanelState           用户信息面板状态
+     * roomNoticeState          房间消息面板状态
+     * roomInfoState            房间信息面板状态
+     * expressionState          表情选择窗口状态
+     * codeInputState           代码发送窗口状态
+     * 
+     * @methods     - 方法
+     * userInfoUpdate           更新用户信息
+     * loadChatPanel            加载聊天面板
+     * unfinished               未完成提示
+     * normalSmartProcess       消息智能处理
+     * expressionProcess        表情处理
+     * noticeProcess            消息提示工厂
+     * userTip                  用户列表消息提示处理
+     * sendMessage              发送消息
+     * takeMessage              调取离线消息
+     * getUserPanel             获取用户面板
+     * chatPanelAdjust          调整聊天框位置
+     * codeBlockAdjust          代码块格式化调整
+     * imageAdjust              图片加载完成调整
+     * imagePreview             图片预览
+     * imgReader                截图上传
+     * pasteMsg                 剪贴板消息
+     * openContactsList         打开联系人列表
+     * 
+     * @created     - 实例创建后触发
+     * socket.emit 'Offline noRead messages'        检查离线状态下的未读消息
+     * 
+     * @mounted     - el 被 vm.$el 替代, 组件视图并不一定渲染完成, 保证组件渲染完成请使用 nextTick
+     * 初始化 socket-client 服务
+     */
     name: 'Chat',
     components: {
         PanelRoomNoticeModule,
@@ -18,7 +79,6 @@ export default {
         return {
             message: '',
             code: '',
-            myPanel: {},
             onlineUsers: '',
             myUserListArr: {
                 all: {
@@ -45,15 +105,9 @@ export default {
                 avatar: ''
             },
             userPanelInfo:  {},
-            systemConfig: {
-                SOURCE_CODE: 'https://github.com/zyw5791557/EmliceChat',
-                WEB_SITE: 'https://www.emlice.top',
-                clearDataLock: true
-            },
             chatPanelFlag: true,
             secretPanel: false,
             loading: true,
-            contactsPanelLock: false
         }
     },
     watch: {
@@ -89,11 +143,6 @@ export default {
     methods: {
         userInfoUpdate () {
             this.$store.commit('UPDATE_USERINFO', JSON.parse(localStorage.getItem('UserInfo')));
-        },
-        getMyPanel () {
-            if(this.$store.state.touristInfo !== null) return touristTips(this);
-            this.userSettingFlag = true;
-            this.$socket.emit('take userInfo', this.userInfo.name);
         },
         loadChatPanel (item) {
             console.log('加载聊天面板', item)
@@ -250,12 +299,6 @@ export default {
         takeMessage (o) {
             this.$socket.emit('take messages', o);
         },
-        logout () {
-            this.$socket.emit('logout', this.userInfo.name);
-            localStorage.removeItem('UserInfo');
-            localStorage.removeItem('TouristInfo');
-            this.$router.push({ name: 'Login' });
-        },
         getUserPanel (name) {
             if(this.$store.state.touristInfo !== null) return touristTips(this);
             if(name.slice(0,2) === '游客') return;
@@ -300,7 +343,7 @@ export default {
         },
         imagePreview () {
             // 图片放大
-            if(this.$refs.preview) {
+            if(this.$refs.preview && this.$refs.preview.length !== 0) {
                 new Viewer(this.$refs.messageList, {
                     url: 'data-original',
                     toolbar: 4,
@@ -377,27 +420,27 @@ export default {
                 }
                 $event.preventDefault();
             }
+        },
+        openContactsList () {
+            if(this.$store.state.touristInfo !== null) return touristTips(this);
+            this.$store.commit('UPDATE_CONTACTSPANELSTATE', true);
         }
     },
     created () {
-        // 用户权限检查
-        this.$socket.emit('check permission', this.userInfo.name);
         // 检查离线状态下的未读消息, 初始化
         this.$socket.emit('Offline noRead messages', this.userInfo.name);
     },
 	mounted() {
-        SocketClient.initAll(this);
-	},
-    updated() {
-        console.log('更新了');
-    }
+        // Socket-Client
+        new this.$SocketClient().initChat(this);
+	}
 }
 </script>
 
 <template>
     <div class="body">
         <div class="user-list">
-            <mu-list-item @click="contactsPanelLock = !contactsPanelLock" title="联系人"></mu-list-item>
+            <mu-list-item @click="openContactsList" title="联系人"></mu-list-item>
             <div v-for="(item,index) in userList" :key="index" @click="loadChatPanel(item)" class="user-list-item" :data-user="item.userID">
                 <img class="avatar-image" :src="item.avatar" alt="">
                 <div class="unread">{{ myUserListArr[item.userID].noRead }}</div>

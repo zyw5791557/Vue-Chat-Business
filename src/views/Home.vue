@@ -1,63 +1,45 @@
 <script>
 import { touristTips } from '@/common/js/util.js';
-import SocketClient from '@/socket-client';
 import UserSettingModule from '@/components/UserSettingModule';
 import SystemSettingModule from '@/components/SystemSettingModule';
 import ContactsModule from '@/components/ContactsModule';
 export default {
-    /**@components  - 组件注册
+    /**
+     * @function
+     * touristTips              游客提示
+     * 
+     * @components  - 组件注册
      * UserSettingModule        用户设置
      * SystemSettingModule      系统设置
-     * PanelRoomNoticeModule    群聊公告面板
-     * PanelRoomInfoModule      群聊信息面板
-     * PanelExpressionModule    表情模块
-     * PanelUserInfoModule      用户信息面板
      * ContactsModule           联系人模块
      * 
      * @data        - 状态
-     * userInfo                 用户信息
      * myPanel                  我的面板信息
-     * duration                 注册时长
-     * onlineUsers              所用在线用户面板
-     * myUserListArr            我的临时会话集合
-     * currentChatData          当前聊天窗口的消息
-     * chatGroup                群聊组
-     * userList                 用户列表
-     * userPanelInfo            用户面板信息
      * systemConfig             系统设置配置项
-     * userSettingState          用户设置窗口状态
-     * systemSettingState        系统设置窗口状态
-     * chatPanelFlag            聊天窗口状态
-     * roomNoticeFlag           群聊公告窗口状态
-     * roomInfoFlag             群聊信息窗口状态
-     * expressionFlag           表情输入窗口状态
-     * secretPanel              私聊 / 群聊标志位
-     * codeInputFlag            代码输入窗口状态
-     * userPanelFlag            用户面板窗口状态
-     * loading                  loading
-     * contactsPanelLock        联系人面板锁
      * 
      * @computed    - 计算属性
+     * connectState             连接状态
+     * userInfo                 用户信息
      * mask                     全局蒙版
+     * userSettingState         用户设置窗口状态
+     * systemSettingState       系统设置窗口状态
+     * lyricState               歌词状态
+     * contactsPanelLock        联系人面板状态
      * 
      * @methods     - 方法
-     * loadChatData             加载离线消息
+     * initBackgroundSize       初始化背景大小设置
      * clearPanel               清除所有面板状态
      * userInfoUpdate           更新用户信息
-     * loadChatPanel            加载聊天面板
+     * getMyPanel               获取用户面板
      * unfinished               未完成提示
-     * normalSmartProcess       消息智能处理
-     * noticeProcess            消息提示工厂
-     * userTip                  用户列表消息提示处理
-     * sendMessage              发送消息
-     * takeMessage              调取离线消息
      * logout                   注销
-     * getUserPanel             获取用户面板
-     * chatPanelAdjust          调整聊天框位置
-     * codeBlockAdjust          代码块格式化调整
-     * imageAdjust              图片加载完成调整
-     * imgReader                截图上传
-     * pasteMsg                 剪贴板消息
+     * 
+     * @created     - 实例创建完成后被调用
+     * socket.emit 'check permission'       检查用户权限
+     * 
+     * @mounted     - el 被 新创建 vm.$el 替代, 组件视图并不一定全部渲染完成
+     * 初始化 socket.client 相应服务
+     * playmusic                            音乐初始化
      */
     name: 'Home',
     components: {
@@ -72,9 +54,7 @@ export default {
                 SOURCE_CODE: 'https://github.com/zyw5791557/EmliceChat',
                 WEB_SITE: 'https://www.emlice.top',
                 clearDataLock: true
-            },
-            loading: true,
-            contactsPanelLock: false
+            }
 		}
     },
     watch: {
@@ -84,6 +64,9 @@ export default {
         }
     },
     computed: {
+        connectState () {
+            return this.$store.state.connectState;
+        },
         userInfo () {
             return this.$store.state.userInfo || this.$store.state.touristInfo;
         },
@@ -98,9 +81,17 @@ export default {
         },
         lyricState () {
             return this.$store.state.lyricState; 
+        },
+        contactsPanelLock () {
+            return this.$store.state.contactsPanelState;
         }
     },
 	methods: {
+        initBackgroundSize () {
+            const w = document.body.clientWidth;
+            const h = document.body.clientHeight;
+            return `background-size: ${w}px ${h}px`
+        },
         clearPanel () {
             this.$store.commit('UPDATE_GLOBALMASK', false);
         },
@@ -121,6 +112,7 @@ export default {
             localStorage.removeItem('TouristInfo');
             this.$router.push({ name: 'Login' });
             this.$store.commit('UPDATE_SYSTEMSETTINGSTATE', false);
+            this.$socket.disconnect();
         }
     },
     created () {
@@ -128,8 +120,12 @@ export default {
         this.$socket.emit('check permission', this.userInfo.name);
     },
 	mounted() {
-        SocketClient.takeUserInfoOn(this);
-        SocketClient.checkPermissionOn(this);
+        // Socket-Client
+        const socketClient = new this.$SocketClient();
+        socketClient.takeUserInfoOn(this);
+        socketClient.checkPermissionOn(this);
+        socketClient.connectOn(this);
+        socketClient.disconnectOn(this);
         // 音乐初始化 | 必须等节点加载完成
         playmusic('.description','432778620');
 	}
@@ -139,8 +135,8 @@ export default {
 <template>
 	<div class="chatroom">
 		<div class="windows">
-            <div class="background">
-                <div style="background-size: 1920px 1030px;background-image: url('/static/images/b.jpg');"></div>
+            <div :style="initBackgroundSize()" class="background">
+                <div :style="initBackgroundSize()" class="background-mask"></div>
             </div>
             <div v-show="mask" @click="clearPanel" class="mask-layout"></div>
             <div class="chatRoom">
@@ -160,7 +156,7 @@ export default {
                         </div>
                     </div>
                     <div class="user-panel">
-                        <div class="online" title="在线"></div>
+                        <div :class="{ offline: !connectState }" class="online" title="在线"></div>
                         <div :style="`background-image: url(${userInfo.avatar})`" @click="getMyPanel" class="avatar-text" title="查看个人信息"></div>
                     </div>
                 </header>
