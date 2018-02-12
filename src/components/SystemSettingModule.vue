@@ -62,7 +62,7 @@ export default {
                 });
                 // 删除本地用户信息
                 localStorage.removeItem('UserInfo');
-                setTimeout(function() {
+                setTimeout(() => {
                     this.$router.push({ name: 'Login' });
                 },2000);
                 return;

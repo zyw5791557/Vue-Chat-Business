@@ -3,22 +3,28 @@
 
 /** back
 $Base-background                        #03a9f4
-$button-background                      #0288d1
-$setting-button-background              #29b6f6
-$setting-button-selected-background     #29b6f6
-$lyric-color                            #2999ce
-$text-color                             #757575
-$Chat-background-image                  '/static/images/b.jpg'
+$Button-background                      #0288d1
+$Setting-button-background              #29b6f6
+$Setting-button-selected-background     #29b6f6
+$Lyric-color                            #2999ce
+$Text-color                             #757575
+$Chat-background-image                  '/static/images/b1.jpg'
+$Chat-mask:                             10px
+$Toolbar-color                          #444
+$Toolbar-color-hover                    #666
 */
 
 /* 基色 */
 $Base-background: #474a4f;
-$button-background: #666;
-$setting-button-background: #474a4f;
-$setting-button-selected-background: #333;
-$lyric-color: #474a4f;
-$Chat-background-image: '/static/images/b1.jpg';
-$text-color: #757575;       
+$Button-background: #212121;
+$Setting-button-background: #474a4f;
+$Setting-button-selected-background: #757575;
+$Lyric-color: #474a4f;
+$Chat-background-image: '/static/images/b7.jpg';
+$Text-color: #757575;
+$Chat-mask: 0px;
+$Toolbar-color: #eee;
+$Toolbar-color-hover: #bdbdbd;       
 
 
 * {
@@ -187,17 +193,17 @@ body {
 }
 
 .background,
-.background>div {
+.background > div {
     height: 100%;
     background-repeat: no-repeat
 }
 
-.background>div {
+.background > div {
     width: 1000px;
     position: absolute;
     left: calc((100vw - 1000px) / 2);
     background-position: calc((1000px - 100vw) / 2) 0;
-    filter: blur(10px)
+    filter: blur($Chat-mask)
 }
 
 .app {
@@ -317,7 +323,7 @@ body {
 }
 
 g .login>div>div:nth-child(1000n+2)>:nth-child(1000n+1) {
-    color: $text-color;
+    color: $Text-color;
     margin-top: 20px;
     margin-bottom: 10px;
     height: 18px
@@ -347,12 +353,12 @@ g .login>div>div:nth-child(1000n+2)>:nth-child(1000n+1) {
 }
 
 .login>div>div:nth-child(1000n+2)>:nth-child(1000n+4) button:hover {
-    background-color: $button-background
+    background-color: $Button-background
 }
 
 .login>div>div:nth-child(1000n+2)>:nth-child(1000n+4) button:focus {
-    border: 1px solid $button-background;
-    box-shadow: 0 0 3px $button-background
+    border: 1px solid $Button-background;
+    box-shadow: 0 0 3px $Button-background
 }
 
 .login>div>div:nth-child(1000n+2)>:nth-child(1000n+4) span {
@@ -364,7 +370,7 @@ g .login>div>div:nth-child(1000n+2)>:nth-child(1000n+1) {
 }
 
 .login>div>div:nth-child(1000n+2)>:nth-child(1000n+4) span:hover {
-    color: $button-background
+    color: $Button-background
 }
 
 .login>div>div:nth-child(1000n+2) .input {
@@ -389,7 +395,7 @@ g .login>div>div:nth-child(1000n+2)>:nth-child(1000n+1) {
 }
 
 .login>div>div:nth-child(1000n+2) .input>div i {
-    color: $text-color;
+    color: $Text-color;
     font-size: 20px
 }
 
@@ -398,7 +404,7 @@ g .login>div>div:nth-child(1000n+2)>:nth-child(1000n+1) {
     height: 36px;
     padding-right: 10px;
     font-size: 16px;
-    color: $text-color;
+    color: $Text-color;
     border-radius: 5px;
     background-color: transparent
 }
@@ -468,12 +474,12 @@ header {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background-color: $button-background;
+    background-color: $Button-background;
     cursor: pointer
 }
 
 .nav-list-item:hover {
-    background-color: $setting-button-background
+    background-color: $Setting-button-background
 }
 
 .nav-list-item i {
@@ -482,7 +488,7 @@ header {
 }
 
 .selected {
-    background-color: $setting-button-selected-background;
+    background-color: $Setting-button-selected-background;
 }
 
 .user-panel {
@@ -623,7 +629,7 @@ header {
     justify-content: center;
     align-items: center;
     margin: 0 20px 10px;
-    background-color: $setting-button-background;
+    background-color: $Setting-button-background;
     color: #fff;
     height: 35px;
     border-radius: 10px;
@@ -856,7 +862,7 @@ header {
 }
 
 .user-setting .normal-status>:nth-child(1000n+2)>button:hover {
-    background-color: $button-background
+    background-color: $Button-background
 }
 
 .user-setting .edit-status {
@@ -939,7 +945,7 @@ header {
 }
 
 .user-setting .edit-status>:nth-child(1000n+2)>button:hover {
-    background-color: $button-background
+    background-color: $Button-background
 }
 
 .body {
@@ -991,7 +997,7 @@ header {
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    background-color: $setting-button-background;
+    background-color: $Setting-button-background;
     color: #fff;
     position: absolute;
     left: 42px;
@@ -1026,7 +1032,7 @@ header {
 
 .user-list-item .content div:first-child p:last-child {
     font-size: 12px;
-    color: $text-color;
+    color: $Text-color;
     margin: 0
 }
 
@@ -1040,7 +1046,7 @@ header {
 .user-list-item .content div:last-child p {
     width: 100%;
     font-size: 12px;
-    color: $text-color;
+    color: $Text-color;
     margin: 0;
     overflow: hidden;
     white-space: nowrap;
@@ -1198,13 +1204,13 @@ header {
 .toolbar div i {
     font-size: 26px;
     margin: 0 10px;
-    color: #444;
+    color: $Toolbar-color;
     text-align: center;
     cursor: pointer
 }
 
 .toolbar div i:hover {
-    color: #666
+    color: $Toolbar-color-hover;
 }
 
 .toolbar div:nth-child(1000n+2) {
@@ -1262,12 +1268,12 @@ header {
 
 .chat-panel-header>div:nth-child(1000n+2)>div i {
     font-size: 24px;
-    color: $button-background;
+    color: $Button-background;
     cursor: pointer
 }
 
 .chat-panel-header>div:nth-child(1000n+2)>div i:hover {
-    color: $setting-button-background
+    color: $Setting-button-background
 }
 
 .chat-panel-header>div:nth-child(1000n+2)>div:nth-child(1000n+1) i {
@@ -1350,7 +1356,7 @@ header {
     height: 30px;
     border-radius: 5px;
     color: #fff;
-    background-color: $button-background;
+    background-color: $Button-background;
     cursor: pointer
 }
 
@@ -1679,7 +1685,7 @@ header {
 }
 
 .code-input>div>button:hover {
-    background-color: $button-background
+    background-color: $Button-background
 }
 
 .user-info {
@@ -1888,7 +1894,7 @@ header {
 }
 
 .user-info .normal-status>:nth-child(1000n+2)>button:hover {
-    background-color: $button-background
+    background-color: $Button-background
 }
 
 .empty-chat-panel {
@@ -2011,7 +2017,7 @@ header {
 }
 
 .input-form>:nth-child(1000n+2)>button:hover {
-    background-color: $setting-button-background
+    background-color: $Setting-button-background
 }
 
 .avatar-image {
@@ -2033,7 +2039,7 @@ header {
     line-height: 30px;
     font-size: 90%;
     font-style: italic;
-    color: $lyric-color;
+    color: $Lyric-color;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

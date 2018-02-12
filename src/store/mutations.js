@@ -15,6 +15,7 @@ import * as types from './mutation-types';
  * UPDATE_EXPRESSIONSTATE       		更新表情界面状态
  * UPDATE_CODEINPUTSTATE        		更新代码输入窗口状态
  * UPDATE_CONTACTSPANELSTATE			更新联系人面板
+ * DELETE_DB_MESSAGE					删除数据库消息
  * 
  * 
  * @function - 函数
@@ -107,6 +108,10 @@ const mutations = {
 
 	[types.UPDATE_CONTACTSPANELSTATE](state) {
 		state.contactsPanelState = !state.contactsPanelState;
+	},
+
+	[types.DELETE_DB_MESSAGE](state, boolean) {
+		state.systemConfig.clearDataLock = boolean;
 	},
 
 };

@@ -39,7 +39,7 @@ export default {
                     localStorage.setItem('Duration', h);
                     this.$store.commit('UPDATE_USERINFO', JSON.parse(localStorage.getItem('UserInfo')));
                     this.$router.push({ name: 'Chat' });
-                    this.$socket.connect();
+                    this.$store.commit('SOCKET_CONNECT');
                 } else if (c === -1) {
                     // 账号或密码错误!
                     this.$message.error('账号或密码错误!');
@@ -66,7 +66,7 @@ export default {
             localStorage.setItem('TouristInfo', JSON.stringify(TouristInfo));
             this.$store.commit('UPDATE_TOURISTINFO', TouristInfo);
             this.$router.push({ name: 'Chat' });
-            this.$socket.connect();
+            this.$store.commit('SOCKET_CONNECT');
         },
         register() {
             this.$router.push({ name: 'Register' });
@@ -76,8 +76,6 @@ export default {
         // 更新仓库用户信息状态
         this.$store.commit('UPDATE_USERINFO', JSON.parse(localStorage.getItem('UserInfo')));
         this.$store.commit('UPDATE_TOURISTINFO', JSON.parse(localStorage.getItem('TouristInfo')));
-        
-        console.log(this.$socket.id);
     }
 }
 </script>

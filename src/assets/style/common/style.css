@@ -2,12 +2,15 @@
 /* user */
 /** back
 $Base-background                        #03a9f4
-$button-background                      #0288d1
-$setting-button-background              #29b6f6
-$setting-button-selected-background     #29b6f6
-$lyric-color                            #2999ce
-$text-color                             #757575
-$Chat-background-image                  '/static/images/b.jpg'
+$Button-background                      #0288d1
+$Setting-button-background              #29b6f6
+$Setting-button-selected-background     #29b6f6
+$Lyric-color                            #2999ce
+$Text-color                             #757575
+$Chat-background-image                  '/static/images/b1.jpg'
+$Chat-mask:                             10px
+$Toolbar-color                          #444
+$Toolbar-color-hover                    #666
 */
 /* 基色 */
 * {
@@ -160,7 +163,7 @@ body {
   z-index: -1;
   height: 100%;
   background-repeat: no-repeat;
-  background-image: url("/static/images/b1.jpg");
+  background-image: url("/static/images/b7.jpg");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-color: #333;
@@ -172,7 +175,7 @@ body {
 }
 
 .background .background-mask {
-  background-image: url("/static/images/b1.jpg");
+  background-image: url("/static/images/b7.jpg");
   background-size: cover;
 }
 
@@ -187,7 +190,7 @@ body {
   position: absolute;
   left: calc((100vw - 1000px) / 2);
   background-position: calc((1000px - 100vw) / 2) 0;
-  filter: blur(10px);
+  filter: blur(0px);
 }
 
 .app {
@@ -337,12 +340,12 @@ g .login > div > div:nth-child(1000n+2) > :nth-child(1000n+1) {
 }
 
 .login > div > div:nth-child(1000n+2) > :nth-child(1000n+4) button:hover {
-  background-color: #666;
+  background-color: #212121;
 }
 
 .login > div > div:nth-child(1000n+2) > :nth-child(1000n+4) button:focus {
-  border: 1px solid #666;
-  box-shadow: 0 0 3px #666;
+  border: 1px solid #212121;
+  box-shadow: 0 0 3px #212121;
 }
 
 .login > div > div:nth-child(1000n+2) > :nth-child(1000n+4) span {
@@ -354,7 +357,7 @@ g .login > div > div:nth-child(1000n+2) > :nth-child(1000n+1) {
 }
 
 .login > div > div:nth-child(1000n+2) > :nth-child(1000n+4) span:hover {
-  color: #666;
+  color: #212121;
 }
 
 .login > div > div:nth-child(1000n+2) .input {
@@ -458,7 +461,7 @@ header {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: #666;
+  background-color: #212121;
   cursor: pointer;
 }
 
@@ -472,7 +475,7 @@ header {
 }
 
 .selected {
-  background-color: #333;
+  background-color: #757575;
 }
 
 .user-panel {
@@ -846,7 +849,7 @@ header {
 }
 
 .user-setting .normal-status > :nth-child(1000n+2) > button:hover {
-  background-color: #666;
+  background-color: #212121;
 }
 
 .user-setting .edit-status {
@@ -929,7 +932,7 @@ header {
 }
 
 .user-setting .edit-status > :nth-child(1000n+2) > button:hover {
-  background-color: #666;
+  background-color: #212121;
 }
 
 .body {
@@ -1188,13 +1191,13 @@ header {
 .toolbar div i {
   font-size: 26px;
   margin: 0 10px;
-  color: #444;
+  color: #eee;
   text-align: center;
   cursor: pointer;
 }
 
 .toolbar div i:hover {
-  color: #666;
+  color: #bdbdbd;
 }
 
 .toolbar div:nth-child(1000n+2) {
@@ -1252,7 +1255,7 @@ header {
 
 .chat-panel-header > div:nth-child(1000n+2) > div i {
   font-size: 24px;
-  color: #666;
+  color: #212121;
   cursor: pointer;
 }
 
@@ -1340,7 +1343,7 @@ header {
   height: 30px;
   border-radius: 5px;
   color: #fff;
-  background-color: #666;
+  background-color: #212121;
   cursor: pointer;
 }
 
@@ -1670,7 +1673,7 @@ header {
 }
 
 .code-input > div > button:hover {
-  background-color: #666;
+  background-color: #212121;
 }
 
 .user-info {
@@ -1879,7 +1882,7 @@ header {
 }
 
 .user-info .normal-status > :nth-child(1000n+2) > button:hover {
-  background-color: #666;
+  background-color: #212121;
 }
 
 .empty-chat-panel {

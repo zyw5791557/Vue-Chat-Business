@@ -78,7 +78,7 @@ export default {
                         localStorage.setItem('Duration', 1);
                         this.$store.commit('UPDATE_USERINFO', JSON.parse(localStorage.getItem('UserInfo')));
                         this.$router.push({ name: 'Chat' });
-                        this.$socket.connect();
+                        this.$store.commit('SOCKET_CONNECT');
                     }, 1000);
                 } else if (c === 1) {
                     // 账号已存在, 请重新输入一个账号

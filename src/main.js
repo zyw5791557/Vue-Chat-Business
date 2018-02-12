@@ -54,5 +54,21 @@ Vue.prototype.$BASE_URL = process.env.API_ROOT;
 new Vue({
 	router,
 	store,
+	created () {
+		const self = this;
+		SocketClient.connectOn(this);
+		SocketClient.disconnectOn(this);
+		SocketClient.checkPermissionOn(this);
+		SocketClient.takeUserInfoOn(this, function (res) {
+			if(res.Data.name === self.$store.state.userInfo.name) {
+				self.$store.state.myPanel = res;
+				self.$store.commit('UPDATE_USERSETTINGSTATE', true);
+			}else {
+				self.$store.state.userPanelInfo = res;
+				self.$store.commit('UPDATE_USERPANELSTATE', true);
+			}
+			console.log('接收用户信息', res);
+		});
+	},
 	render: h => h(App)
 }).$mount('#app');

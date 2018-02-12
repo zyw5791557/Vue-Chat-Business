@@ -225,9 +225,16 @@ io.on('connection', function(socket) {
 
     // 用户权限检查
     socket.on('check permission', function(user) {
-        if($permissionArr.indexOf(user) == -1) {
+        if($permissionArr.indexOf(user) !== -1) {
             socket.emit('check permission', 1);
+        } else {
+            socket.emit('check permission', 0);
         }
+    });
+
+    // 用户查找
+    socket.on('search user', function(value) {
+        console.log('查找用户', value);
     });
 
 });

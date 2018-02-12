@@ -26,7 +26,6 @@ export default {
      * chatGroup                群聊组
      * userList                 用户列表
      * currentChatUserInfo      当前聊天窗口用户信息
-     * userPanelInfo            用户面板信息
      * chatPanelFlag            聊天面板状态
      * secretPanel              是否为私聊窗口
      * loading                  loading
@@ -37,6 +36,7 @@ export default {
      * 
      * @computed    - 计算属性
      * userInfo                 用户信息
+     * userPanelInfo            用户面板信息
      * userPanelState           用户信息面板状态
      * roomNoticeState          房间消息面板状态
      * roomInfoState            房间信息面板状态
@@ -77,37 +77,11 @@ export default {
     },
     data () {
         return {
-            message: '',
-            code: '',
-            onlineUsers: '',
-            myUserListArr: {
-                all: {
-                    noRead: 0
-                },
-            },
-            currentChatData: [],
-            chatGroup: ['all'],
-            userList: [
-                {
-                    name: '群聊',
-                    userID: 'all',
-                    avatar: '/static/images/sleep.gif',
-                    unread: 0,
-                    messageInfo: {
-                        message: '',
-                        date: ''
-                    }
-                }
-            ],
-            currentChatUserInfo: {
-                name: '',
-                userID: '',
-                avatar: ''
-            },
-            userPanelInfo:  {},
-            chatPanelFlag: true,
-            secretPanel: false,
-            loading: true,
+            message: '',          
+            code: '',             
+            chatGroup: ['all'],       
+            chatPanelFlag: true,      
+            secretPanel: false
         }
     },
     watch: {
@@ -124,6 +98,34 @@ export default {
         userInfo () {
             return this.$store.state.userInfo || this.$store.state.touristInfo;
         },
+        userPanelInfo () {
+            return this.$store.state.userPanelInfo;
+        },
+
+        onlineUsers () {
+            return this.$store.state.onlineUsers;
+        },
+
+        myUserListArr () {
+            return this.$store.state.myUserListArr;
+        },
+
+        currentChatData () {
+            return this.$store.state.currentChatData;
+        },
+
+        currentChatUserInfo () {
+            return this.$store.state.currentChatUserInfo;
+        },
+
+        userList () {
+            return this.$store.state.userList;
+        },
+
+        loading () {
+            return this.$store.state.loading;
+        },
+        
         userPanelState () {
             return this.$store.state.userPanelState;
         },
@@ -148,23 +150,26 @@ export default {
             console.log('加载聊天面板', item)
             console.log(this.chatGroup.indexOf(item.userID))
             if(item.userID === this.currentChatUserInfo.userID) return;
-            if(this.myUserListArr[item.userID])this.myUserListArr[item.userID].noRead = 0;
-            this.loading = true;
+            if(this.myUserListArr[item.userID])this.$store.state.myUserListArr[item.userID].noRead = 0;
+            this.$store.state.loading = true;
             let existFlag = false;
-            this.userList.map(item => {
-                if(item.userID === item.userID) {
+            this.userList.map(obj => {
+                if(obj.userID === item.userID) {
                     existFlag = true;
                 }
             });
-            if(!existFlag) this.userList.push(item);
+            if(!existFlag) {
+                this.$set(this.$store.state.myUserListArr, item.userID, { noRead: 0 });
+                this.$store.state.userList.push(item);
+            }
             this.takeMessage({
                 from: this.userInfo.name,
                 take: item.userID
             });
             const { name, userID, avatar } = item;
-            this.currentChatUserInfo.name = name;
-            this.currentChatUserInfo.userID = userID;
-            this.currentChatUserInfo.avatar = avatar;
+            this.$store.state.currentChatUserInfo.name = name;
+            this.$store.state.currentChatUserInfo.userID = userID;
+            this.$store.state.currentChatUserInfo.avatar = avatar;
             if(this.chatGroup.indexOf(item.userID) !== -1) {
                this.chatPanelFlag = false; 
                 this.secretPanel = false;
@@ -303,8 +308,7 @@ export default {
             if(this.$store.state.touristInfo !== null) return touristTips(this);
             if(name.slice(0,2) === '游客') return;
             if(name !== this.userInfo.name) {
-                this.$store.commit('UPDATE_USERPANELSTATE', true);
-                this.$socket.emit('take userInfo', name);
+                this.$store.commit('SOCKET_TAKEUSERINFO_EMIT', name);
             }else {
                 return;
             }
@@ -432,7 +436,7 @@ export default {
     },
 	mounted() {
         // Socket-Client
-        new this.$SocketClient().initChat(this);
+        this.$SocketClient.initChat(this);
 	}
 }
 </script>

@@ -51,30 +51,31 @@ function noReadMsgRender (res, $this) {
      *  from 来自谁的消息
      */
     
-    var currentUser = $this.currentChatUserInfo.userID;
+    var currentUser = $this.$store.state.currentChatUserInfo.userID;
 
     // 判断当前窗口是否为聊天渲染窗口, 若是调用渲染函数, 若不是, 直接跳走并 未读消息计数 ++ 
     if (currentUser !== '') {           // 如果当前频道不为空频道
         // 当前为私聊频道或群聊频道
         if (res[0].to == 'all' && currentUser !== 'all') {    // 如果是发送去群聊频道切当前不在群聊频道
-            $this.myUserListArr.all.noRead++;
+            $this.$store.state.myUserListArr.all.noRead++;
         } else {                     // 私聊频道
             if (res[0].to !== 'all' && res[0].from !== $this.userInfo.name && currentUser !== res[0].from) {
-                $this.myUserListArr[res[0].from] === undefined ? $this.$set($this.myUserListArr, res[0].from, { noRead: 1 }) : $this.myUserListArr[res[0].from].noRead++;
+                $this.$store.state.myUserListArr[res[0].from] === undefined ? $this.$set($this.$store.state.myUserListArr, res[0].from, { noRead: 1 }) : $this.$store.state.myUserListArr[res[0].from].noRead++;
             }
         }
     } else {
         // 当前为空频道。
         if (res[0].to == 'all' && currentUser !== 'all') {    // 如果是发送去群聊频道切当前不在群聊频道
-            $this.myUserListArr.all.noRead++;
+            $this.$store.state.myUserListArr.all.noRead++;
         } else {                     // 私聊频道
             if (res[0].to !== 'all' && res[0].from !== $this.userInfo.name && currentUser !== res[0].from) {
-                $this.myUserListArr[res[0].from] === undefined ? $this.$set($this.myUserListArr, res[0].from, { noRead: 1 }) : $this.myUserListArr[res[0].from].noRead++;
+                $this.$store.state.myUserListArr[res[0].from] === undefined ? $this.$set($this.$store.state.myUserListArr, res[0].from, { noRead: 1 }) : $this.$store.state.myUserListArr[res[0].from].noRead++;
             }
         }
     }
 
 }
+
 
 
 /**
@@ -90,48 +91,48 @@ function noReadMsgRender (res, $this) {
  * takeMessageOn                获取历史消息 | on
  * messagesOn                   获取实时消息 | on
  * desktopRemind                桌面提醒 | on
+ * takeUserInfoEmit             请求用户信息 | emit
  * takeUserInfoOn               获取用户信息 | on
  * checkPermissionOn            检查用户权限 | on
  * offlineNoReadMessagesOn      查看离线消息 | on
  */
 
 class SocketClient {
-    initChat ($this) {
+    static initChat ($this) {
         this.userJoinEmit($this);
         this.userJoinOn($this);
         this.takeMessageOn($this);
         this.messagesOn($this);
         this.desktopRemind($this);
-        this.takeUserInfoOn($this);
         this.offlineNoReadMessagesOn($this);
     }
-    connectOn ($this) {
+    static connectOn ($this) {
         $this.$socket.on('connect',() => {
             $this.$store.commit('UPDATE_CONNECTSTATE', true);
-        })
+        });
     }
-    disconnectOn ($this) {
+    static disconnectOn ($this) {
         $this.$socket.on('disconnect',() => {
             $this.$store.commit('UPDATE_CONNECTSTATE', false);
-        })
+        });
     }
     // 用户加入
-    userJoinEmit ($this) {
+    static userJoinEmit ($this) {
         $this.$socket.emit('user join', $this.userInfo.name);
     }
     // 接受用户数
-    userJoinOn ($this) {
+    static userJoinOn ($this) {
         $this.$socket.on('user join', data => {
             console.log(data)
-            $this.onlineUsers = data;
+            $this.$store.state.onlineUsers = data;
         });
     }
     // 接受历史记录
-    takeMessageOn ($this) {
+    static takeMessageOn ($this) {
         $this.$socket.on('take messages',  data => {
             console.log('历史记录：', data);
-            $this.loading = false;
-            $this.currentChatData = data;
+            $this.$store.state.loading = false;
+            $this.$store.state.currentChatData = data;
             if(data.length >= 1) $this.userTip(data[data.length - 1]);
             $this.$nextTick(() => {
                 $this.chatPanelAdjust();
@@ -142,17 +143,17 @@ class SocketClient {
         });
     }
     // 接收 message
-    messagesOn ($this) {
+    static messagesOn ($this) {
         $this.$socket.on('message', data => {
             console.log('消息',data);
             // 渲染未读消息
             noReadMsgRender(data, $this);
-            const f = data[0].to === $this.currentChatUserInfo.userID;
+            const f = data[0].to === $this.$store.state.currentChatUserInfo.userID;
             if(f) {
-                $this.currentChatData = $this.currentChatData.concat(data);
+                $this.$store.state.currentChatData = $this.$store.state.currentChatData.concat(data);
             } else {
                 let existFlag = false;
-                $this.userList.map(item => {
+                $this.$store.state.userList.map(item => {
                     if(item.userID === data[0].from) {
                         existFlag = true;
                     }
@@ -164,7 +165,9 @@ class SocketClient {
                     unread: 0,
                     messageInfo: {}
                 }
-                if(!existFlag && data[0].to !== 'all') $this.userList.push(o);
+                if(!existFlag && data[0].to !== 'all') {
+                    $this.$store.state.userList.push(o);
+                }
             }
             $this.$nextTick(() => {
                 $this.userTip(data[0]);
@@ -176,37 +179,52 @@ class SocketClient {
         });
     }
 
-    desktopRemind ($this) {
+    static desktopRemind ($this) {
         $this.$socket.on('desktopRemind', data => {
             // 桌面提醒
             desktopRemind(data, $this);
         });
     }
 
+    // 请求用户名片
+    static takeUserInfoEmit ($this,username) {
+        $this.$socket.emit('take userInfo', username);
+    }
+
     // 接受用户名片
-    takeUserInfoOn ($this) {
+    // static takeUserInfoOn ($this) {
+    //     $this.$socket.on('take userInfo', res => {
+    //         console.log(res);
+    //         if(res.Data.name !== $this.userInfo.name) {
+    //             $this.userPanelInfo = res;
+    //         }else {
+    //             $this.myPanel = res;
+    //         }
+    //     });
+    // }
+
+    // 接受用户名片
+    static takeUserInfoOn ($this,callback) {
         $this.$socket.on('take userInfo', res => {
-            console.log(res);
-            if(res.Data.name !== $this.userInfo.name) {
-                $this.userPanelInfo = res;
-            }else {
-                $this.myPanel = res;
-            }
+            callback(res)
         });
     }
     // 权限检查
-    checkPermissionOn ($this) {
+    static checkPermissionOn ($this) {
         $this.$socket.on('check permission', f => {
+            console.log(f)
             if(f) {
-                $this.systemConfig.clearDataLock = false;
+                $this.$store.commit('DELETE_DB_MESSAGE', true);
+            } else {
+                $this.$store.commit('DELETE_DB_MESSAGE', false);
             }
         });
     }
     // 接受离线消息未读条数
-    offlineNoReadMessagesOn ($this) {
+    static offlineNoReadMessagesOn ($this) {
         $this.$socket.on('Offline noRead messages',  res => {
             console.log('渲染离线消息',res);
-            var currentUser = $this.currentChatUserInfo.userID;
+            var currentUser = $this.$store.state.currentChatUserInfo.userID;
             var fromArr = {};
             var fromList = {};
             if (res.length !== 0) {
@@ -233,9 +251,9 @@ class SocketClient {
                             unread: 0,
                             messageInfo: {}
                         }
-                        $this.userList.push(o);
+                        $this.$store.state.userList.push(o);
                         // 添加临时会话成员
-                        $this.$set($this.myUserListArr, k, { noRead: fromArr[k].noRead });
+                        $this.$set($this.$store.state.myUserListArr, k, { noRead: fromArr[k].noRead });
                         // 渲染最后一条消息
                         $this.userTip(fromArr[k].lastMsg)
                     }

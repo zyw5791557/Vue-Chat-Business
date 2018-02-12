@@ -5,6 +5,13 @@ import * as getters from './getters';
 import * as actions from './actions';
 import mutations from './mutations';
 
+// store module
+import socketModule from './module/socketClient';
+
+import SocketClient from '@/socket-client';
+
+
+
 
 Vue.use(Vuex);
 
@@ -14,6 +21,9 @@ const createStore = () => {
 		getters,
 		mutations,
 		actions,
+		modules: {
+			socketModule
+		}
 	});
 }
 

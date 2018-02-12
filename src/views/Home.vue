@@ -14,11 +14,11 @@ export default {
      * ContactsModule           联系人模块
      * 
      * @data        - 状态
-     * myPanel                  我的面板信息
-     * systemConfig             系统设置配置项
      * backgroundSize           背景大小
      * 
      * @computed    - 计算属性
+     * myPanel                  我的面板信息
+     * systemConfig             系统设置配置项
      * connectState             连接状态
      * userInfo                 用户信息
      * mask                     全局蒙版
@@ -37,11 +37,12 @@ export default {
      * logout                   注销
      * 
      * @created     - 实例创建完成后被调用
-     * socket.emit 'check permission'       检查用户权限
+     * SOCKET_CHECK_PERMISSION_EMIT       检查用户权限
      * 
      * @mounted     - el 被 新创建 vm.$el 替代, 组件视图并不一定全部渲染完成
-     * 初始化 socket.client 相应服务
-     * playmusic                            音乐初始化
+     * initBackgroundSize                            初始化 backgroundSize 的值
+     * winResize                                     window.onresize 调整
+     * playmusic   1.歌词显示节点 2.网易云歌单ID       音乐初始化 | 必须等节点加载完成
      */
     name: 'Home',
     components: {
@@ -51,22 +52,16 @@ export default {
     },
 	data() {
 		return {
-            myPanel: {},
-            systemConfig: {
-                SOURCE_CODE: 'https://github.com/zyw5791557/EmliceChat',
-                WEB_SITE: 'https://www.emlice.top',
-                clearDataLock: true
-            },
             backgroundSize: ''
 		}
     },
-    watch: {
-        currentChatData (res) {
-            // 朕已阅
-            this.$socket.emit('message read', { readUser: this.userInfo.name, msgs: res });
-        }
-    },
     computed: {
+        myPanel () {
+            return this.$store.state.myPanel;
+        },
+        systemConfig () {
+            return this.$store.state.systemConfig;
+        },
         connectState () {
             return this.$store.state.connectState;
         },
@@ -108,36 +103,29 @@ export default {
         },
         getMyPanel () {
             if(this.$store.state.touristInfo !== null) return touristTips(this);
-            this.$store.commit('UPDATE_USERSETTINGSTATE', true);
-            this.$socket.emit('take userInfo', this.userInfo.name);
+            this.$store.commit('SOCKET_TAKEUSERINFO_EMIT', this.userInfo.name);
         },
         unfinished () {
             this.$notify.info({ title: '消息', message: '暂未开放' });
         },
         logout () {
-            this.$socket.emit('logout', this.userInfo.name);
+            this.$store.commit('SOCKET_LOGOUT_EMIT', this.userInfo.name);
             localStorage.removeItem('UserInfo');
             localStorage.removeItem('TouristInfo');
             this.$router.push({ name: 'Login' });
             this.$store.commit('UPDATE_SYSTEMSETTINGSTATE', false);
-            this.$socket.disconnect();
+            this.$store.commit('SOCKET_DISCONNECT');
         }
     },
     created () {
         // 用户权限检查
-        this.$socket.emit('check permission', this.userInfo.name);
+        this.$store.commit('SOCKET_CHECK_PERMISSION_EMIT', this.userInfo.name);
     },
 	mounted() {
         // 初始化 backgroundSize 的值
         this.initBackgroundSize();
         // window.onresize 调整
         this.winResize();
-        // Socket-Client
-        const socketClient = new this.$SocketClient();
-        socketClient.takeUserInfoOn(this);
-        socketClient.checkPermissionOn(this);
-        socketClient.connectOn(this);
-        socketClient.disconnectOn(this);
         // 音乐初始化 | 必须等节点加载完成
         playmusic('.description','432778620');
 	}

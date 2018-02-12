@@ -18,6 +18,13 @@
 
 const state = {
 	connectState: true,
+	systemConfig: {
+		SOURCE_CODE: 'https://github.com/zyw5791557/EmliceChat',
+		WEB_SITE: 'https://www.emlice.top',
+		clearDataLock: false
+	},
+	myPanel: {},
+	userPanelInfo: {},
 	userInfo: JSON.parse(localStorage.getItem('UserInfo')),
 	touristInfo: JSON.parse(localStorage.getItem('TouristInfo')),
 	globalMask: false,
@@ -42,7 +49,32 @@ const state = {
 				'钱币', '灯泡', '咖啡', '蛋糕', '音乐', 'haha', '胜利', '大拇指', '弱', 'ok',
 			]
 		},
-	}
+	},
+	onlineUsers: '',
+	myUserListArr: {
+		all: {
+			noRead: 0
+		},
+	},
+	currentChatData: [],
+	userList: [
+		{
+			name: '群聊',
+			userID: 'all',
+			avatar: '/static/images/sleep.gif',
+			unread: 0,
+			messageInfo: {
+				message: '',
+				date: ''
+			}
+		}
+	],
+	currentChatUserInfo: {
+		name: '',
+		userID: '',
+		avatar: ''
+	},
+	loading: true,
 };
 
 export default state;

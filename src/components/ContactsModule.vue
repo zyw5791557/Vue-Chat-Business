@@ -30,6 +30,9 @@ export default {
         },
         handleChange (val) {
             this.bottomNav = val;
+        },
+        searchUser () {
+            
         }
     }
 }
@@ -69,11 +72,14 @@ export default {
                     <mu-icon value="chat_bubble" slot="right"/>
                     </mu-list-item>
                 </mu-list>
-                <mu-divider/>
-                <mu-list-item @click.native="open = false" title="Close"/>
             </mu-list>
             <mu-list v-else>
-                <mu-text-field v-model="searchVal" hintText="搜索联系人" type="text" icon="search"/>
+                <mu-text-field 
+                    v-model="searchVal"
+                    @keydown.enter="searchUser" 
+                    hintText="搜索联系人" 
+                    type="text" 
+                    icon="search"/>
                 <mu-list>
                     <mu-sub-header>查询结果</mu-sub-header>
                     <mu-list-item title="Mike Li">
@@ -98,6 +104,8 @@ export default {
                     </mu-list-item>
                 </mu-list>
             </mu-list>
+            <mu-divider/>
+            <mu-list-item @click.native="open = false" title="Close"/>
         </mu-drawer>
     </div>
 </template>
