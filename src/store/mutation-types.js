@@ -13,7 +13,15 @@
  * UPDATE_EXPRESSIONSTATE       更新表情界面状态
  * UPDATE_CODEINPUTSTATE        更新代码输入窗口状态
  * UPDATE_CONTACTSPANELSTATE    更新联系人面板状态
- * DELETE_DB_MESSAGE            删除数据库消息              
+ * DELETE_DB_MESSAGE            删除数据库消息    
+ * 
+ * UPDATE_ONLINEUSERS           更新在线用户数   
+ * UPDATE_MYUSERLISTARR         更新我的当前聊天用户列表     
+ * UPDATE_CURRENTCHATDATA       更新当前聊天面板数据  
+ * UPDATE_USERLIST              更新用户列表
+ * UPDATE_CURRENTCHATUSERINFO   更新当前聊天用户信息
+ * UPDATE_LOADING               更新数据加载状态
+ * CLEAR_HISTORY                清空用户历史数据
  */
 
 export const UPDATE_CONNECTSTATE = 'UPDATE_CONNECTSTATE';
@@ -43,3 +51,20 @@ export const UPDATE_CODEINPUTSTATE = 'UPDATE_CODEINPUTSTATE';
 export const UPDATE_CONTACTSPANELSTATE = 'UPDATE_CONTACTSPANELSTATE';
 
 export const DELETE_DB_MESSAGE = 'DELETE_DB_MESSAGE';
+
+
+// Chat
+
+export const UPDATE_ONLINEUSERS = 'UPDATE_ONLINEUSERS';
+
+export const UPDATE_MYUSERLISTARR = 'UPDATE_MYUSERLISTARR';
+
+export const UPDATE_CURRENTCHATDATA = 'UPDATE_CURRENTCHATDATA';
+
+export const UPDATE_USERLIST = 'UPDATE_USERLIST';
+
+export const UPDATE_CURRENTCHATUSERINFO = 'UPDATE_CURRENTCHATUSERINFO';
+
+export const UPDATE_LOADING = 'UPDATE_LOADING';
+
+export const CLEAR_HISTORY = 'CLEAR_HISTORY';

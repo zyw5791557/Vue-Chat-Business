@@ -115,11 +115,16 @@ export default {
             this.$router.push({ name: 'Login' });
             this.$store.commit('UPDATE_SYSTEMSETTINGSTATE', false);
             this.$store.commit('SOCKET_DISCONNECT');
-        }
+            this.$store.commit('CLEAR_HISTORY');
+
+            
+        },
     },
     created () {
         // 用户权限检查
         this.$store.commit('SOCKET_CHECK_PERMISSION_EMIT', this.userInfo.name);
+        // 用户加入
+        this.$store.commit('SOCKET_USER_JOIN_EMIT', this.userInfo.name);
     },
 	mounted() {
         // 初始化 backgroundSize 的值

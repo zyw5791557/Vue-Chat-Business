@@ -114,6 +114,70 @@ const mutations = {
 		state.systemConfig.clearDataLock = boolean;
 	},
 
+	// Chat
+
+	[types.UPDATE_ONLINEUSERS](state, data) {
+		state.onlineUsers = data;
+	},
+
+	[types.UPDATE_MYUSERLISTARR](state, obj) {
+		console.log(obj)
+		if (obj.addRead) {
+			state.myUserListArr[obj.userID].noRead++;
+			return;
+		}
+		if(!obj.userID) {
+			this._vm.$set(state.myUserListArr, obj.key, obj.value);
+		} else {
+			state.myUserListArr[obj.userID].noRead = 0;
+		}
+	},
+
+	[types.UPDATE_CURRENTCHATDATA](state, obj) {
+		if(!obj.concat) {
+			state.currentChatData = obj.data;
+		} else {
+			state.currentChatData = state.currentChatData.concat(obj.data);
+		}
+	},
+
+	[types.UPDATE_USERLIST](state, o) {
+		state.userList.push(o);
+	},
+
+	[types.CLEAR_HISTORY](state) {
+		state.myUserListArr = {
+			all: {
+				noRead: 0
+			},
+		}
+		state.userList = [
+			{
+				name: '群聊',
+				userID: 'all',
+				avatar: '/static/images/sleep.gif',
+				unread: 0,
+				messageInfo: {
+					message: '',
+					date: ''
+				}
+			}
+		];
+		state.currentChatUserInfo.name = '';
+		state.currentChatUserInfo.userID = '';
+		state.currentChatUserInfo.avatar = '';
+	},
+
+	[types.UPDATE_CURRENTCHATUSERINFO](state, item) {
+		state.currentChatUserInfo.name = item.name;
+		state.currentChatUserInfo.userID = item.userID;
+		state.currentChatUserInfo.avatar = item.avatar;
+	},
+
+	[types.UPDATE_LOADING](state, boolean) {
+		state.loading = boolean;
+	},
+
 };
 
 

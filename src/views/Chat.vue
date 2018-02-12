@@ -87,7 +87,10 @@ export default {
     watch: {
         currentChatData (res) {
             // 朕已阅
-            this.$socket.emit('message read', { readUser: this.userInfo.name, msgs: res });
+            this.$store.commit('SOCKET_MESSAGE_READ_EMIT', {
+                readUser: this.userInfo.name, 
+                msgs: res
+            });
         },
         chatPanelFlag (val) {
             // 更新仓库歌词状态
@@ -150,8 +153,12 @@ export default {
             console.log('加载聊天面板', item)
             console.log(this.chatGroup.indexOf(item.userID))
             if(item.userID === this.currentChatUserInfo.userID) return;
-            if(this.myUserListArr[item.userID])this.$store.state.myUserListArr[item.userID].noRead = 0;
-            this.$store.state.loading = true;
+            if(this.myUserListArr[item.userID]) {
+                this.$store.commit('UPDATE_MYUSERLISTARR', {
+                    userID: item.userID
+                });
+            }
+            this.$store.commit('UPDATE_LOADING', true);
             let existFlag = false;
             this.userList.map(obj => {
                 if(obj.userID === item.userID) {
@@ -159,17 +166,18 @@ export default {
                 }
             });
             if(!existFlag) {
-                this.$set(this.$store.state.myUserListArr, item.userID, { noRead: 0 });
-                this.$store.state.userList.push(item);
+                this.$store.commit('UPDATE_MYUSERLISTARR', {
+                    key: item.userID,
+                    value: { noRead: 0 },
+                });
+                this.$store.commit('UPDATE_USERLIST', item);
             }
             this.takeMessage({
                 from: this.userInfo.name,
                 take: item.userID
             });
             const { name, userID, avatar } = item;
-            this.$store.state.currentChatUserInfo.name = name;
-            this.$store.state.currentChatUserInfo.userID = userID;
-            this.$store.state.currentChatUserInfo.avatar = avatar;
+            this.$store.commit('UPDATE_CURRENTCHATUSERINFO', item);
             if(this.chatGroup.indexOf(item.userID) !== -1) {
                this.chatPanelFlag = false; 
                 this.secretPanel = false;
@@ -297,12 +305,12 @@ export default {
                 read: false,
             }
             console.log('消息', msg);
-            this.$socket.emit('message', msg);
+            this.$store.commit('SOCKET_MESSAGE_EMIT', msg);
             this[clear] = '';
             if(clear === 'code') this.$store.commit('UPDATE_CODEINPUTSTATE', false);
         },
         takeMessage (o) {
-            this.$socket.emit('take messages', o);
+            this.$store.commit('SOCKET_TAKE_MESSAGES_EMIT', o);
         },
         getUserPanel (name) {
             if(this.$store.state.touristInfo !== null) return touristTips(this);
@@ -401,7 +409,7 @@ export default {
                         date: new Date().getTime(),
                         read: false,
                     }
-                    this.$socket.emit('message', msg);
+                    this.$store.commit('SOCKET_MESSAGE_EMIT', msg);
                 } else if (Code === -1) {
                     this.$notify.error({
                         title: '错误',
@@ -432,7 +440,7 @@ export default {
     },
     created () {
         // 检查离线状态下的未读消息, 初始化
-        this.$socket.emit('Offline noRead messages', this.userInfo.name);
+        this.$store.commit('SOCKET_OFFLINE_NOREAD_MESSAGES_EMIT', this.userInfo.name);
     },
 	mounted() {
         // Socket-Client

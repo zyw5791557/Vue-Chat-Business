@@ -57,19 +57,47 @@ function noReadMsgRender (res, $this) {
     if (currentUser !== '') {           // 如果当前频道不为空频道
         // 当前为私聊频道或群聊频道
         if (res[0].to == 'all' && currentUser !== 'all') {    // 如果是发送去群聊频道切当前不在群聊频道
-            $this.$store.state.myUserListArr.all.noRead++;
+            $this.$store.commit('UPDATE_MYUSERLISTARR', {
+                addRead: true,
+                userID: 'all'
+            });
         } else {                     // 私聊频道
             if (res[0].to !== 'all' && res[0].from !== $this.userInfo.name && currentUser !== res[0].from) {
-                $this.$store.state.myUserListArr[res[0].from] === undefined ? $this.$set($this.$store.state.myUserListArr, res[0].from, { noRead: 1 }) : $this.$store.state.myUserListArr[res[0].from].noRead++;
+                if($this.$store.state.myUserListArr[res[0].from] === undefined) {
+                    $this.$store.commit('UPDATE_MYUSERLISTARR', {
+                        key: res[0].from,
+                        value: { noRead: 1 }
+                    });
+                } else {
+                    $this.$store.commit('UPDATE_MYUSERLISTARR', {
+                        addRead: true,
+                        userID: res[0].from
+                    });
+                }
             }
         }
     } else {
         // 当前为空频道。
         if (res[0].to == 'all' && currentUser !== 'all') {    // 如果是发送去群聊频道切当前不在群聊频道
-            $this.$store.state.myUserListArr.all.noRead++;
+            $this.$store.commit('UPDATE_MYUSERLISTARR', {
+                addRead: true,
+                key: null,
+                value: null,
+                userID: 'all'
+            });
         } else {                     // 私聊频道
             if (res[0].to !== 'all' && res[0].from !== $this.userInfo.name && currentUser !== res[0].from) {
-                $this.$store.state.myUserListArr[res[0].from] === undefined ? $this.$set($this.$store.state.myUserListArr, res[0].from, { noRead: 1 }) : $this.$store.state.myUserListArr[res[0].from].noRead++;
+                if($this.$store.state.myUserListArr[res[0].from] === undefined) {
+                    $this.$store.commit('UPDATE_MYUSERLISTARR', {
+                        key: res[0].from,
+                        value: { noRead: 1 }
+                    });
+                } else {
+                    $this.$store.commit('UPDATE_MYUSERLISTARR', {
+                        addRead: true,
+                        userID: res[0].from
+                    });
+                }
             }
         }
     }
@@ -86,12 +114,10 @@ function noReadMsgRender (res, $this) {
  * initAll                      初始化所有客户端事件
  * connectOn                    监听连接状态
  * disconnectOn                 监听断线状态
- * userJoinEmit                 用户加入 | emit
  * userJoinOn                   用户加入 | on
  * takeMessageOn                获取历史消息 | on
  * messagesOn                   获取实时消息 | on
  * desktopRemind                桌面提醒 | on
- * takeUserInfoEmit             请求用户信息 | emit
  * takeUserInfoOn               获取用户信息 | on
  * checkPermissionOn            检查用户权限 | on
  * offlineNoReadMessagesOn      查看离线消息 | on
@@ -99,7 +125,6 @@ function noReadMsgRender (res, $this) {
 
 class SocketClient {
     static initChat ($this) {
-        this.userJoinEmit($this);
         this.userJoinOn($this);
         this.takeMessageOn($this);
         this.messagesOn($this);
@@ -116,23 +141,22 @@ class SocketClient {
             $this.$store.commit('UPDATE_CONNECTSTATE', false);
         });
     }
-    // 用户加入
-    static userJoinEmit ($this) {
-        $this.$socket.emit('user join', $this.userInfo.name);
-    }
     // 接受用户数
     static userJoinOn ($this) {
         $this.$socket.on('user join', data => {
             console.log(data)
-            $this.$store.state.onlineUsers = data;
+            $this.$store.commit('UPDATE_ONLINEUSERS', data);
         });
     }
     // 接受历史记录
     static takeMessageOn ($this) {
         $this.$socket.on('take messages',  data => {
             console.log('历史记录：', data);
-            $this.$store.state.loading = false;
-            $this.$store.state.currentChatData = data;
+            $this.$store.commit('UPDATE_LOADING', false);
+            $this.$store.commit('UPDATE_CURRENTCHATDATA',{
+                concat: false,
+                data: data
+            });
             if(data.length >= 1) $this.userTip(data[data.length - 1]);
             $this.$nextTick(() => {
                 $this.chatPanelAdjust();
@@ -150,7 +174,10 @@ class SocketClient {
             noReadMsgRender(data, $this);
             const f = data[0].to === $this.$store.state.currentChatUserInfo.userID;
             if(f) {
-                $this.$store.state.currentChatData = $this.$store.state.currentChatData.concat(data);
+                $this.$store.commit('UPDATE_CURRENTCHATDATA',{
+                    concat: true,
+                    data: data
+                });
             } else {
                 let existFlag = false;
                 $this.$store.state.userList.map(item => {
@@ -166,7 +193,7 @@ class SocketClient {
                     messageInfo: {}
                 }
                 if(!existFlag && data[0].to !== 'all') {
-                    $this.$store.state.userList.push(o);
+                    $this.$store.commit('UPDATE_USERLIST',o);
                 }
             }
             $this.$nextTick(() => {
@@ -185,23 +212,6 @@ class SocketClient {
             desktopRemind(data, $this);
         });
     }
-
-    // 请求用户名片
-    static takeUserInfoEmit ($this,username) {
-        $this.$socket.emit('take userInfo', username);
-    }
-
-    // 接受用户名片
-    // static takeUserInfoOn ($this) {
-    //     $this.$socket.on('take userInfo', res => {
-    //         console.log(res);
-    //         if(res.Data.name !== $this.userInfo.name) {
-    //             $this.userPanelInfo = res;
-    //         }else {
-    //             $this.myPanel = res;
-    //         }
-    //     });
-    // }
 
     // 接受用户名片
     static takeUserInfoOn ($this,callback) {
@@ -251,7 +261,7 @@ class SocketClient {
                             unread: 0,
                             messageInfo: {}
                         }
-                        $this.$store.state.userList.push(o);
+                        $this.$store.commit('UPDATE_USERLIST',o);
                         // 添加临时会话成员
                         $this.$set($this.$store.state.myUserListArr, k, { noRead: fromArr[k].noRead });
                         // 渲染最后一条消息
