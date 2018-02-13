@@ -74,6 +74,7 @@ const state = {
 		userID: '',
 		avatar: ''
 	},
+	latestMessage: null,
 	loading: true,
 };
 

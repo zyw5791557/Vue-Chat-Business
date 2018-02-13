@@ -91,6 +91,16 @@ export default {
                 readUser: this.userInfo.name, 
                 msgs: res
             });
+            this.$nextTick(() => {
+                this.chatPanelAdjust();
+                this.codeBlockAdjust();
+                this.imageAdjust();
+                this.imagePreview();
+            });
+            this.userTip(res[res.length - 1]);
+        },
+        latestMessage (val) {
+            this.userTip(val);
         },
         chatPanelFlag (val) {
             // 更新仓库歌词状态
@@ -123,6 +133,10 @@ export default {
 
         userList () {
             return this.$store.state.userList;
+        },
+
+        latestMessage () {
+            return this.$store.state.latestMessage;
         },
 
         loading () {
@@ -198,13 +212,14 @@ export default {
             var gf = param.match(/.*(\.gif)$/);
             // 远程图片链接解析, 接口反防盗链
             if(FTA !== null && f !== null) {
+                console.log(param);
                 return `
                     <div class="image">
                         <img data-original="/api/imgload?url=${param}" src="/api/imgload?url=${param}" onerror="this.src='/static/images/imgError.jpg'" style="max-height: 200px;">
                     </div>
                 `;
             }
-            // 单独玻璃 gif 图
+            // 单独剥离 gif 图
             if(FTA !== null && gf !== null) {
                 return `
                     <div class="image">
@@ -353,22 +368,27 @@ export default {
                 this.chatPanelAdjust();
             });
         },
+        imagePreviewHandle () {
+            return new Viewer(this.$refs.messageList, {
+                url: 'data-original',
+                toolbar: 4,
+                // 过滤图片
+                filter (image) {
+                    if(
+                        image.classList.contains('avatar-image') || 
+                        image.classList.contains('expression-default-message') ||
+                        image.classList.contains('gif-image')
+                    ) return false;
+                    return true;
+                },
+            });
+        },
         imagePreview () {
             // 图片放大
             if(this.$refs.preview && this.$refs.preview.length !== 0) {
-                new Viewer(this.$refs.messageList, {
-                    url: 'data-original',
-                    toolbar: 4,
-                    // 过滤图片
-                    filter(image) {
-                        if(
-                            image.classList.contains('avatar-image') || 
-                            image.classList.contains('expression-default-message') ||
-                            image.classList.contains('gif-image')
-                        ) return false;
-                        return true;
-                    },
-                });
+                let viewer = this.imagePreviewHandle();
+                viewer.destroy();
+                viewer = this.imagePreviewHandle();
             }
         },
         imgReader (item) {
@@ -445,7 +465,10 @@ export default {
 	mounted() {
         // Socket-Client
         this.$SocketClient.initChat(this);
-	}
+    },
+    updated () {
+        
+    }
 }
 </script>
 

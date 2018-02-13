@@ -16,6 +16,7 @@ import * as types from './mutation-types';
  * UPDATE_CODEINPUTSTATE        		更新代码输入窗口状态
  * UPDATE_CONTACTSPANELSTATE			更新联系人面板
  * DELETE_DB_MESSAGE					删除数据库消息
+ * UPDATE_LATEST_MESSAGE				更新接受到最新的消息
  * 
  * 
  * @function - 函数
@@ -172,6 +173,10 @@ const mutations = {
 		state.currentChatUserInfo.name = item.name;
 		state.currentChatUserInfo.userID = item.userID;
 		state.currentChatUserInfo.avatar = item.avatar;
+	},
+
+	[types.UPDATE_LATEST_MESSAGE](state, obj) {
+		state.latestMessage = obj;
 	},
 
 	[types.UPDATE_LOADING](state, boolean) {

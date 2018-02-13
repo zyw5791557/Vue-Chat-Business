@@ -157,23 +157,19 @@ class SocketClient {
                 concat: false,
                 data: data
             });
-            if(data.length >= 1) $this.userTip(data[data.length - 1]);
-            $this.$nextTick(() => {
-                $this.chatPanelAdjust();
-                $this.codeBlockAdjust();
-                $this.imageAdjust();
-                $this.imagePreview();
-            });
         });
     }
     // 接收 message
     static messagesOn ($this) {
         $this.$socket.on('message', data => {
             console.log('消息',data);
+            $this.$store.commit('UPDATE_LATEST_MESSAGE', data[0]);
             // 渲染未读消息
             noReadMsgRender(data, $this);
             const f = data[0].to === $this.$store.state.currentChatUserInfo.userID;
-            if(f) {
+            const isMe = data[0].to === $this.$store.state.userInfo.name;
+            const isGroupChat = data[0].from === $this.$store.state.currentChatUserInfo.userID;
+            if(f || (isMe && isGroupChat)) {
                 $this.$store.commit('UPDATE_CURRENTCHATDATA',{
                     concat: true,
                     data: data
@@ -190,19 +186,15 @@ class SocketClient {
                     userID: data[0].from,
                     avatar: data[0].avatar,
                     unread: 0,
-                    messageInfo: {}
+                    messageInfo: {
+                        message: data[0].message,
+                        date: data[0].date
+                    }
                 }
                 if(!existFlag && data[0].to !== 'all') {
                     $this.$store.commit('UPDATE_USERLIST',o);
                 }
             }
-            $this.$nextTick(() => {
-                $this.userTip(data[0]);
-                $this.chatPanelAdjust();
-                $this.codeBlockAdjust();
-                $this.imageAdjust();
-                $this.imagePreview();
-            });
         });
     }
 
