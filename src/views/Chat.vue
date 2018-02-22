@@ -1,6 +1,9 @@
 <script>
 import Date from '@/common/js/dateTools.js';
-import { touristTips } from '@/common/js/util.js';
+import {
+    touristTips,
+    noticeProcess
+} from '@/common/js/util.js';
 import PanelRoomNoticeModule from '@/components/PanelRoomNoticeModule';
 import PanelRoomInfoModule from '@/components/PanelRoomInfoModule';
 import PanelExpressionModule from '@/components/PanelExpressionModule';
@@ -49,7 +52,6 @@ export default {
      * unfinished               未完成提示
      * normalSmartProcess       消息智能处理
      * expressionProcess        表情处理
-     * noticeProcess            消息提示工厂
      * userTip                  用户列表消息提示处理
      * sendMessage              发送消息
      * takeMessage              调取离线消息
@@ -97,7 +99,6 @@ export default {
                 this.imageAdjust();
                 this.imagePreview();
             });
-            this.userTip(res[res.length - 1]);
         },
         latestMessage (val) {
             this.userTip(val);
@@ -265,35 +266,12 @@ export default {
                         style="background-position: left -${baidu_idx * baidu_space}px; background-image: url(${baidu_address})" 
                         onerror="this.style.display='none'">`
         },
-        noticeProcess (param,type) {
-            const baidu = this.$store.state.expression.baidu.data;
-            if (type === 'expression') {
-                var baidu_idx;
-                baidu.some((item, index) => {
-                    if (item === param) {
-                        baidu_idx = index;
-                    }
-                });
-                if (baidu_idx === undefined) return param;
-                return `[表情]`;
-            } else if (type === 'printscreen') {
-                return `[图片]`;
-            } else if(type === 'code') {
-                return `[代码片段]`;
-            } else {
-                var FTA = param.match(/^(https?|ftp|file):\/\//g);
-                var f = param.match(/.*(\.png|\.jpg|\.jpeg|\.gif)$/);
-                if(FTA !== null && f !== null) return `[远程地址图片]`;
-                if(FTA !== null) return `[链接]`; 
-                return param;
-            }
-        },
         userTip (last) {
             console.log('小提示',last)
             if(last.to === 'all') {
                 this.userList.find(item => {
                     if(item.userID === last.to) {
-                        this.$set(item.messageInfo, 'message', last.from + '： ' + this.noticeProcess(last.message,last.type));
+                        this.$set(item.messageInfo, 'message', last.from + '： ' + noticeProcess(last.message,last.type));
                         this.$set(item.messageInfo, 'date', new Date(last.date).format('hh:mm'));
                         return;
                     }
@@ -301,7 +279,7 @@ export default {
             } else {
                 this.userList.find(item => {
                     if(item.userID === last.from || item.userID === last.to) {
-                        this.$set(item.messageInfo, 'message', last.from + '： ' + this.noticeProcess(last.message,last.type));
+                        this.$set(item.messageInfo, 'message', last.from + '： ' + noticeProcess(last.message,last.type));
                         this.$set(item.messageInfo, 'date', new Date(last.date).format('hh:mm'));
                         return;
                     }
@@ -328,7 +306,7 @@ export default {
             this.$store.commit('SOCKET_TAKE_MESSAGES_EMIT', o);
         },
         getUserPanel (name) {
-            if(this.$store.state.touristInfo !== null) return touristTips(this);
+            if(this.$store.state.touristInfo !== null) return touristTips();
             if(name.slice(0,2) === '游客') return;
             if(name !== this.userInfo.name) {
                 this.$store.commit('SOCKET_TAKEUSERINFO_EMIT', name);
@@ -454,17 +432,13 @@ export default {
             }
         },
         openContactsList () {
-            if(this.$store.state.touristInfo !== null) return touristTips(this);
+            if(this.$store.state.touristInfo !== null) return touristTips();
             this.$store.commit('UPDATE_CONTACTSPANELSTATE', true);
         }
     },
     created () {
         // 检查离线状态下的未读消息, 初始化
         this.$store.commit('SOCKET_OFFLINE_NOREAD_MESSAGES_EMIT', this.userInfo.name);
-    },
-	mounted() {
-        // Socket-Client
-        this.$SocketClient.initChat(this);
     },
     updated () {
         

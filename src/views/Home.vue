@@ -102,7 +102,7 @@ export default {
             this.$store.commit('UPDATE_USERINFO', JSON.parse(localStorage.getItem('UserInfo')));
         },
         getMyPanel () {
-            if(this.$store.state.touristInfo !== null) return touristTips(this);
+            if(this.$store.state.touristInfo !== null) return touristTips();
             this.$store.commit('SOCKET_TAKEUSERINFO_EMIT', this.userInfo.name);
         },
         unfinished () {
@@ -116,8 +116,6 @@ export default {
             this.$store.commit('UPDATE_SYSTEMSETTINGSTATE', false);
             this.$store.commit('SOCKET_DISCONNECT');
             this.$store.commit('CLEAR_HISTORY');
-
-            
         },
     },
     created () {

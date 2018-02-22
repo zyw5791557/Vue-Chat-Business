@@ -166,12 +166,14 @@ io.on('connection', function(socket) {
         var r = [];
         r.push(res);
         if(to === 'all') {
-            io.emit('message',r);                           // 全体发送
+            io.emit('message',r);                                   // 全体发送
+            socket.broadcast.emit('desktopRemind', r);              // 桌面提醒
         }else {
-            users[to] && users[to].emit('message',r);       // 只对特别的人发送
+            users[to] && users[to].emit('message',r);               // 只对特别的人发送
             users[from] && users[from].emit('message',r);
+            users[to] && users[to].emit('desktopRemind', r);        // 桌面提醒
+            users[from] && users[from].emit('desktopRemind', r);
         }
-        socket.broadcast.emit('desktopRemind', r);          // 桌面提醒
     });
 
     // 监听调取messages

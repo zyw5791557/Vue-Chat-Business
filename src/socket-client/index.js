@@ -1,3 +1,6 @@
+import {
+    noticeProcess
+} from '@/common/js/util.js';
 
 /**
  * @function
@@ -6,11 +9,9 @@
  */
 
 function desktopRemind (res, $this) {
-    console.log('桌面提醒啊啊啊');
+    console.log('桌面提醒啊啊啊', res);
     const storeUser = $this.$store.state.userInfo !== null ? $this.$store.state.userInfo.name : $this.$store.state.touristInfo.name;
-    const cacheUser = $this.userInfo.name;
-    const flag = storeUser === cacheUser;
-    if (res[0].from !== $this.userInfo.name && flag) {
+    if (res[0].from !== storeUser) {
         var d = JSON.parse(localStorage.getItem('desktopNotification'));
         var s = JSON.parse(localStorage.getItem('soundNotification'));
         if (s) {
@@ -27,7 +28,7 @@ function desktopRemind (res, $this) {
                         lang: "zh-CN",
                         // tag: "testNotice",
                         icon: '/static/images/sleep.gif',
-                        body: `${res[0].from}：${$this.noticeProcess(res[0].message,res[0].type)}`,
+                        body: `${res[0].from}：${noticeProcess(res[0].message,res[0].type)}`,
                         // renotify: true,     // 是否替换之前的通知
                     });
                     notification.onclick = function () {
@@ -50,8 +51,8 @@ function noReadMsgRender (res, $this) {
     /**
      *  from 来自谁的消息
      */
-    
-    var currentUser = $this.$store.state.currentChatUserInfo.userID;
+    const storeUser = $this.$store.state.userInfo !== null ? $this.$store.state.userInfo.name : $this.$store.state.touristInfo.name;
+    const currentUser = $this.$store.state.currentChatUserInfo.userID;
 
     // 判断当前窗口是否为聊天渲染窗口, 若是调用渲染函数, 若不是, 直接跳走并 未读消息计数 ++ 
     if (currentUser !== '') {           // 如果当前频道不为空频道
@@ -62,7 +63,7 @@ function noReadMsgRender (res, $this) {
                 userID: 'all'
             });
         } else {                     // 私聊频道
-            if (res[0].to !== 'all' && res[0].from !== $this.userInfo.name && currentUser !== res[0].from) {
+            if (res[0].to !== 'all' && res[0].from !== storeUser && currentUser !== res[0].from) {
                 if($this.$store.state.myUserListArr[res[0].from] === undefined) {
                     $this.$store.commit('UPDATE_MYUSERLISTARR', {
                         key: res[0].from,
@@ -86,7 +87,7 @@ function noReadMsgRender (res, $this) {
                 userID: 'all'
             });
         } else {                     // 私聊频道
-            if (res[0].to !== 'all' && res[0].from !== $this.userInfo.name && currentUser !== res[0].from) {
+            if (res[0].to !== 'all' && res[0].from !== storeUser && currentUser !== res[0].from) {
                 if($this.$store.state.myUserListArr[res[0].from] === undefined) {
                     $this.$store.commit('UPDATE_MYUSERLISTARR', {
                         key: res[0].from,
@@ -125,7 +126,11 @@ function noReadMsgRender (res, $this) {
 
 class SocketClient {
     static initChat ($this) {
+        this.connectOn($this);
+        this.disconnectOn($this);
+        this.checkPermissionOn($this);
         this.userJoinOn($this);
+        this.takeUserInfoOn($this);
         this.takeMessageOn($this);
         this.messagesOn($this);
         this.desktopRemind($this);
@@ -157,6 +162,7 @@ class SocketClient {
                 concat: false,
                 data: data
             });
+            if(data.length > 0) $this.$store.commit('UPDATE_LATEST_MESSAGE', data[data.length - 1]);
         });
     }
     // 接收 message
@@ -167,7 +173,7 @@ class SocketClient {
             // 渲染未读消息
             noReadMsgRender(data, $this);
             const f = data[0].to === $this.$store.state.currentChatUserInfo.userID;
-            const isMe = data[0].to === $this.$store.state.userInfo.name;
+            const isMe = $this.$store.state.userInfo !== null ? $this.$store.state.userInfo.name : $this.$store.state.touristInfo.name;
             const isGroupChat = data[0].from === $this.$store.state.currentChatUserInfo.userID;
             if(f || (isMe && isGroupChat)) {
                 $this.$store.commit('UPDATE_CURRENTCHATDATA',{
@@ -206,9 +212,16 @@ class SocketClient {
     }
 
     // 接受用户名片
-    static takeUserInfoOn ($this,callback) {
+    static takeUserInfoOn ($this) {
         $this.$socket.on('take userInfo', res => {
-            callback(res)
+            if(res.Data.name === $this.$store.state.userInfo.name) {
+				$this.$store.state.myPanel = res;
+				$this.$store.commit('UPDATE_USERSETTINGSTATE', true);
+			}else {
+				$this.$store.state.userPanelInfo = res;
+				$this.$store.commit('UPDATE_USERPANELSTATE', true);
+			}
+			console.log('接收用户信息', res);
         });
     }
     // 权限检查
@@ -226,7 +239,8 @@ class SocketClient {
     static offlineNoReadMessagesOn ($this) {
         $this.$socket.on('Offline noRead messages',  res => {
             console.log('渲染离线消息',res);
-            var currentUser = $this.$store.state.currentChatUserInfo.userID;
+            const storeUser = $this.$store.state.userInfo !== null ? $this.$store.state.userInfo.name : $this.$store.state.touristInfo.name;
+            const currentUser = $this.$store.state.currentChatUserInfo.userID;
             var fromArr = {};
             var fromList = {};
             if (res.length !== 0) {
@@ -245,7 +259,7 @@ class SocketClient {
                 }
                 console.log(fromArr)
                 for (var k in fromArr) {
-                    if (currentUser !== k && k !== $this.userInfo.name && k !== 'all') {
+                    if (currentUser !== k && k !== storeUser && k !== 'all') {
                         const o = {
                             name: fromArr[k].lastMsg.from,
                             userID: fromArr[k].lastMsg.from,
@@ -256,8 +270,12 @@ class SocketClient {
                         $this.$store.commit('UPDATE_USERLIST',o);
                         // 添加临时会话成员
                         $this.$set($this.$store.state.myUserListArr, k, { noRead: fromArr[k].noRead });
-                        // 渲染最后一条消息
-                        $this.userTip(fromArr[k].lastMsg)
+                        // 渲染最后一条消息(闭包)
+                        (function(k) {
+                            setInterval(() => {
+                                $this.$store.commit('UPDATE_LATEST_MESSAGE', fromArr[k].lastMsg);
+                            },0);
+                        })(k)
                     }
                 }
             }
