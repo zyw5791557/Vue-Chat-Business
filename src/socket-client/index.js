@@ -137,6 +137,8 @@ class SocketClient {
         this.offlineNoReadMessagesOn($this);
         this.typingOn($this);
         this.stopTypingOn($this);
+        this.searchUserOn($this);
+        this.contactsUpdateOn($this);
     }
     static connectOn ($this) {
         $this.$socket.on('connect',() => {
@@ -295,6 +297,19 @@ class SocketClient {
             if($this.$store.state.userInfo.name === obj.to && $this.$store.state.currentChatUserInfo.userID === obj.from) {
                 $this.$store.commit('UPDATE_TYPINGSTATE', false);
             }
+        });
+    }
+
+    // 查找用户
+    static searchUserOn ($this) {
+        $this.$socket.on('search user', res => {
+            $this.$store.commit('UPDATE_SEARCHUSERRES', res);
+        });
+    }
+
+    static contactsUpdateOn ($this) {
+        $this.$socket.on('contacts update', res => {
+            $this.$store.commit('UPDATE_MYCONTACTSLIST', res);
         });
     }
 }

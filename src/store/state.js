@@ -77,6 +77,10 @@ const state = {
 	},
 	latestMessage: null,
 	loading: true,
+	
+	// 联系人
+	myContactsList: [],
+	searchUserRes: []
 };
 
 export default state;

@@ -11,7 +11,7 @@ export default {
         return {
             open: false,
             bottomNav: 'contacts',
-            searchVal: 'Emlice'
+            searchVal: '',
         }
     },
     watch: {
@@ -20,8 +20,14 @@ export default {
         }  
     },
     computed: {
-        contactsListState() {
+        contactsListState () {
             return this.bottomNav === 'contacts' ? true : false;
+        },
+        myContactsList () {
+            return this.$store.state.myContactsList;
+        },
+        searchUserRes () {
+            return this.$store.state.searchUserRes;
         }
     },
     methods: {
@@ -32,7 +38,10 @@ export default {
             this.bottomNav = val;
         },
         searchUser () {
-            
+            this.$store.commit('SOCKET_SEARCH_USER_EMIT', this.searchVal);
+        },
+        addContacts (item) {
+            this.$store.commit('SOCKET_ADD_CONTACTS_EMIT', item);
         }
     }
 }
@@ -50,57 +59,28 @@ export default {
             </mu-paper>
             <mu-list v-if="contactsListState">
                 <mu-list>
-                    <mu-sub-header>最近聊天记录</mu-sub-header>
-                    <mu-list-item title="Mike Li">
-                    <mu-avatar src="/static/images/user.jpg" slot="leftAvatar"/>
-                    <mu-icon value="chat_bubble" slot="right"/>
-                    </mu-list-item>
-                    <mu-list-item title="Maco Mai">
-                    <mu-avatar src="/static/images/user.jpg" slot="leftAvatar"/>
-                    <mu-icon value="chat_bubble" slot="right"/>
-                    </mu-list-item>
-                    <mu-list-item title="Alex Qin">
-                    <mu-avatar src="/static/images/user.jpg" slot="leftAvatar"/>
-                    <mu-icon value="chat_bubble" slot="right"/>
-                    </mu-list-item>
-                    <mu-list-item title="Allen Qun">
-                    <mu-avatar src="/static/images/user.jpg" slot="leftAvatar"/>
-                    <mu-icon value="chat_bubble" slot="right"/>
-                    </mu-list-item>
-                    <mu-list-item title="Myron Liu">
-                    <mu-avatar src="/static/images/user.jpg" slot="leftAvatar"/>
+                    <mu-sub-header>我的联系人</mu-sub-header>
+                    <mu-list-item v-for="(item, index) in myContactsList" :key="index" :title="item.name">
+                    <mu-avatar :src="item.avatar" slot="leftAvatar"/>
                     <mu-icon value="chat_bubble" slot="right"/>
                     </mu-list-item>
                 </mu-list>
             </mu-list>
             <mu-list v-else>
-                <mu-text-field 
+                <div class="search-box">
+                    <mu-text-field 
                     v-model="searchVal"
-                    @keydown.enter="searchUser" 
                     hintText="搜索联系人" 
                     type="text" 
-                    icon="search"/>
+                    icon="search"
+                    class="search-val"/>
+                    <mu-raised-button @click="searchUser" label="查找" fullWidth/>
+                </div>
                 <mu-list>
                     <mu-sub-header>查询结果</mu-sub-header>
-                    <mu-list-item title="Mike Li">
-                    <mu-avatar src="/static/images/user.jpg" slot="leftAvatar"/>
-                    <mu-icon value="add" slot="right"/>
-                    </mu-list-item>
-                    <mu-list-item title="Maco Mai">
-                    <mu-avatar src="/static/images/user.jpg" slot="leftAvatar"/>
-                    <mu-icon value="add" slot="right"/>
-                    </mu-list-item>
-                    <mu-list-item title="Alex Qin">
-                    <mu-avatar src="/static/images/user.jpg" slot="leftAvatar"/>
-                    <mu-icon value="add" slot="right"/>
-                    </mu-list-item>
-                    <mu-list-item title="Allen Qun">
-                    <mu-avatar src="/static/images/user.jpg" slot="leftAvatar"/>
-                    <mu-icon value="add" slot="right"/>
-                    </mu-list-item>
-                    <mu-list-item title="Myron Liu">
-                    <mu-avatar src="/static/images/user.jpg" slot="leftAvatar"/>
-                    <mu-icon value="add" slot="right"/>
+                    <mu-list-item v-for="(item, index) in searchUserRes" :key="index" :title="item.name">
+                    <mu-avatar :src="item.avatar" slot="leftAvatar"/>
+                    <mu-icon @click="addContacts(item)" value="add" slot="right"/>
                     </mu-list-item>
                 </mu-list>
             </mu-list>
@@ -111,6 +91,13 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
+.search-box {
+    .search-val {
+        margin-bottom: 0;
+    }
+}
+.mu-list {
+    min-height: 600px;
+}
 </style>
 

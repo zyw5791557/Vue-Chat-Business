@@ -44,6 +44,14 @@ const socket = {
         SOCKET_LOGOUT_EMIT (state, name) {
             this._vm.$socket.emit('logout', name);
         },
+        
+        SOCKET_ADD_CONTACTS_EMIT (state, item) {
+            this._vm.$socket.emit('add contacts', item);
+        },
+
+        SOCKET_SEARCH_USER_EMIT (state, name) {
+            this._vm.$socket.emit('search user', name);
+        },
 
         SOCKET_CONNECT (state) {
             this._vm.$socket.connect();

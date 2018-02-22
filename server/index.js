@@ -27,6 +27,8 @@ require('./server/model.js');
 const Messages = mongoose.model('messages');
 // User 为 model name
 const User = mongoose.model('users');    
+// UserContacts 指向 联系人表
+const UserContacts = mongoose.model('userContacts');
 
 
 
@@ -234,9 +236,31 @@ io.on('connection', function(socket) {
         }
     });
 
+    // 添加联系人
+    socket.on('add contacts', function(item) {
+        console.log(username + '新添加的联系人是', item);
+        let query = UserContacts.findOne({ name: username });
+        query.exec(function(err,person) {
+            if(err) throw err;
+            if(person == null) {
+                var contacts = {
+                    user: username,
+                    contacts: new Array(item)
+                };
+                var usercontacts = new UserContacts(contacts);
+                usercontacts.save();
+                socket.emit('contacts update', new Array(item));
+            }
+        })
+    });
+
     // 用户查找
-    socket.on('search user', function(value) {
-        console.log('查找用户', value);
+    socket.on('search user', function(name) {
+        var query = { name: new RegExp(name, 'i') }
+        User.find(query, { name: 1, avatar: 1 }, function(err,res) {
+            if(err) throw err;
+            socket.emit('search user', res);
+        });
     });
 
     // typing
@@ -244,6 +268,7 @@ io.on('connection', function(socket) {
         users[obj.to] && users[obj.to].emit('typing',obj);
     });
 
+    // stop typing
     socket.on('stop typing', function (obj) {
         users[obj.to] && users[obj.to].emit('stop typing',obj);
     });

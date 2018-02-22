@@ -188,6 +188,14 @@ const mutations = {
 		state.typingState = boolean;
 	},
 
+	[types.UPDATE_SEARCHUSERRES](state, data) {
+		state.searchUserRes = data;
+	},
+
+	[types.UPDATE_MYCONTACTSLIST](state, data) {
+		state.myContactsList = data;
+	},
+
 };
 
 
