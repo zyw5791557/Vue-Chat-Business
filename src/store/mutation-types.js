@@ -22,7 +22,9 @@
  * UPDATE_CURRENTCHATUSERINFO   更新当前聊天用户信息
  * UPDATE_LOADING               更新数据加载状态
  * CLEAR_HISTORY                清空用户历史数据
+ * 
  * UPDATE_LATEST_MESSAGE        更新收到的最新消息
+ * UPDATE_TYPINGSTATE           更新打字状态
  */
 
 export const UPDATE_CONNECTSTATE = 'UPDATE_CONNECTSTATE';
@@ -72,3 +74,5 @@ export const CLEAR_HISTORY = 'CLEAR_HISTORY';
 
 
 export const UPDATE_LATEST_MESSAGE = 'UPDATE_LATEST_MESSAGE';
+
+export const UPDATE_TYPINGSTATE = 'UPDATE_TYPINGSTATE';

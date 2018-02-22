@@ -32,6 +32,14 @@ const socket = {
         SOCKET_OFFLINE_NOREAD_MESSAGES_EMIT (state, name) {
             this._vm.$socket.emit('Offline noRead messages', name);
         },
+        
+        SOCKET_TYPING_EMIT (state, obj) {
+            this._vm.$socket.emit('typing', obj);
+        },
+        
+        SOCKET_STOPTYPING_EMIT (state, obj) {
+            this._vm.$socket.emit('stop typing', obj);
+        },
 
         SOCKET_LOGOUT_EMIT (state, name) {
             this._vm.$socket.emit('logout', name);

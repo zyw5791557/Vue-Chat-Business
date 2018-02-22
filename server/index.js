@@ -239,6 +239,15 @@ io.on('connection', function(socket) {
         console.log('查找用户', value);
     });
 
+    // typing
+    socket.on('typing', function (obj) {
+        users[obj.to] && users[obj.to].emit('typing',obj);
+    });
+
+    socket.on('stop typing', function (obj) {
+        users[obj.to] && users[obj.to].emit('stop typing',obj);
+    });
+
 });
 
 module.exports = app;

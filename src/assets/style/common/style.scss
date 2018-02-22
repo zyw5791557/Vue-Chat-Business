@@ -24,7 +24,8 @@ $Chat-background-image: '/static/images/b7.jpg';
 $Text-color: #757575;
 $Chat-mask: 0px;
 $Toolbar-color: #eee;
-$Toolbar-color-hover: #bdbdbd;       
+$Toolbar-color-hover: #bdbdbd;
+$typing-color: #666;       
 
 
 * {
@@ -1252,7 +1253,14 @@ header {
     color: #212121;
     margin-left: 10px;
     font-size: 20px;
-    font-weight: 700
+    font-weight: 700;
+}
+
+.chat-panel-header>div:nth-child(1000n+1) span {
+    color: $typing-color;
+    margin-left: 10px;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 .chat-panel-header>div:nth-child(1000n+2) {

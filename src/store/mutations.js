@@ -17,6 +17,7 @@ import * as types from './mutation-types';
  * UPDATE_CONTACTSPANELSTATE			更新联系人面板
  * DELETE_DB_MESSAGE					删除数据库消息
  * UPDATE_LATEST_MESSAGE				更新接受到最新的消息
+ * UPDATE_TYPINGSTATE					更新打字状态
  * 
  * 
  * @function - 函数
@@ -181,6 +182,10 @@ const mutations = {
 
 	[types.UPDATE_LOADING](state, boolean) {
 		state.loading = boolean;
+	},
+
+	[types.UPDATE_TYPINGSTATE](state, boolean) {
+		state.typingState = boolean;
 	},
 
 };

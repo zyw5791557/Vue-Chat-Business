@@ -18,6 +18,7 @@
 
 const state = {
 	connectState: true,
+	typingState: false,
 	systemConfig: {
 		SOURCE_CODE: 'https://github.com/zyw5791557/EmliceChat',
 		WEB_SITE: 'https://www.emlice.top',

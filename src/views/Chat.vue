@@ -8,6 +8,7 @@ import PanelRoomNoticeModule from '@/components/PanelRoomNoticeModule';
 import PanelRoomInfoModule from '@/components/PanelRoomInfoModule';
 import PanelExpressionModule from '@/components/PanelExpressionModule';
 import PanelUserInfoModule from '@/components/PanelUserInfoModule';
+let lastTypingTime;
 export default {
     /**
      * @function    - 函数
@@ -434,14 +435,35 @@ export default {
         openContactsList () {
             if(this.$store.state.touristInfo !== null) return touristTips();
             this.$store.commit('UPDATE_CONTACTSPANELSTATE', true);
+        },
+        typingEmit () {
+            const from = this.userInfo.name;
+            const to = this.currentChatUserInfo.userID;
+            let typing = false;
+            if (!typing) {
+                this.$store.commit('SOCKET_TYPING_EMIT', {
+                    from: from,
+                    to: to
+                });
+                typing = true;
+            }
+            lastTypingTime = (new Date()).getTime();
+            setTimeout( () => {
+                var typingTimer = (new Date()).getTime();
+                var timeDiff = typingTimer - lastTypingTime;
+                if (timeDiff >= 400 && typing) {
+                    this.$store.commit('SOCKET_STOPTYPING_EMIT', {
+                        from: from,
+                        to: to
+                    });
+                    typing = true;
+                }
+            }, 400);
         }
     },
     created () {
         // 检查离线状态下的未读消息, 初始化
         this.$store.commit('SOCKET_OFFLINE_NOREAD_MESSAGES_EMIT', this.userInfo.name);
-    },
-    updated () {
-        
     }
 }
 </script>
@@ -470,6 +492,9 @@ export default {
                 <div>
                     <img class="avatar-image" :src="currentChatUserInfo.avatar" style="width: 40px; height: 40px; min-width: 40px; min-height: 40px;">
                     <p>{{ currentChatUserInfo.name }}</p>
+                    <transition name="fade">
+                        <span v-show="secretPanel && $store.state.typingState">对方正在输入...</span>
+                    </transition>
                 </div>
                 <div v-if="!secretPanel">
                     <div @click="$store.commit('UPDATE_ROOMNOTICESTATE', true);" style="margin: auto 8px;" class="roomNotice">
@@ -525,7 +550,8 @@ export default {
                 <input 
                     ref="inputMsg" 
                     v-model="message" 
-                    @keyup.enter="sendMessage(message,'normal','message')" 
+                    @keydown.enter="sendMessage(message,'normal','message')"
+                    @input="typingEmit"
                     @paste="pasteMsg"
                     type="text" 
                     placeholder="输入消息" 

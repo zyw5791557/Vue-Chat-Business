@@ -135,6 +135,8 @@ class SocketClient {
         this.messagesOn($this);
         this.desktopRemind($this);
         this.offlineNoReadMessagesOn($this);
+        this.typingOn($this);
+        this.stopTypingOn($this);
     }
     static connectOn ($this) {
         $this.$socket.on('connect',() => {
@@ -203,14 +205,12 @@ class SocketClient {
             }
         });
     }
-
     static desktopRemind ($this) {
         $this.$socket.on('desktopRemind', data => {
             // 桌面提醒
             desktopRemind(data, $this);
         });
     }
-
     // 接受用户名片
     static takeUserInfoOn ($this) {
         $this.$socket.on('take userInfo', res => {
@@ -278,6 +278,22 @@ class SocketClient {
                         })(k)
                     }
                 }
+            }
+        });
+    }
+    // typing 状态
+    static typingOn ($this) {
+        $this.$socket.on('typing', obj => {
+            if($this.$store.state.userInfo.name === obj.to && $this.$store.state.currentChatUserInfo.userID === obj.from) {
+                $this.$store.commit('UPDATE_TYPINGSTATE', true);
+            }
+        });
+    }
+    // stop typing 状态
+    static stopTypingOn ($this) {
+        $this.$socket.on('stop typing', obj => {
+            if($this.$store.state.userInfo.name === obj.to && $this.$store.state.currentChatUserInfo.userID === obj.from) {
+                $this.$store.commit('UPDATE_TYPINGSTATE', false);
             }
         });
     }
