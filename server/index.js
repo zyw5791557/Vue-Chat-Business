@@ -239,8 +239,9 @@ io.on('connection', function(socket) {
     // 添加联系人
     socket.on('add contacts', function(item) {
         console.log(username + '新添加的联系人是', item);
-        let query = UserContacts.findOne({ name: username });
+        let query = UserContacts.findOne({ user: username });
         query.exec(function(err,person) {
+            console.log('xxx',person);
             if(err) throw err;
             if(person == null) {
                 var contacts = {
@@ -250,6 +251,8 @@ io.on('connection', function(socket) {
                 var usercontacts = new UserContacts(contacts);
                 usercontacts.save();
                 socket.emit('contacts update', new Array(item));
+            } else {
+                
             }
         })
     });
