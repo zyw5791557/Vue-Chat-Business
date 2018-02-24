@@ -42,6 +42,17 @@ export default {
         },
         addContacts (item) {
             this.$store.commit('SOCKET_ADD_CONTACTS_EMIT', item);
+        },
+        loadChat (item) {
+            const o = {
+                name: item.name,
+                userID: item.name,
+                avatar: item.avatar,
+                unread: 0,
+                messageInfo: {}
+            }
+            this.$emit('loadChatPanel', o);
+            this.toggle();
         }
     }
 }
@@ -60,7 +71,7 @@ export default {
             <mu-list v-if="contactsListState">
                 <mu-list>
                     <mu-sub-header>我的联系人</mu-sub-header>
-                    <mu-list-item v-for="(item, index) in myContactsList" :key="index" :title="item.name">
+                    <mu-list-item @click="loadChat(item)" v-for="(item, index) in myContactsList" :key="index" :title="item.name">
                     <mu-avatar :src="item.avatar" slot="leftAvatar"/>
                     <mu-icon value="chat_bubble" slot="right"/>
                     </mu-list-item>

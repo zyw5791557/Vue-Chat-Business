@@ -8,6 +8,7 @@ import PanelRoomNoticeModule from '@/components/PanelRoomNoticeModule';
 import PanelRoomInfoModule from '@/components/PanelRoomInfoModule';
 import PanelExpressionModule from '@/components/PanelExpressionModule';
 import PanelUserInfoModule from '@/components/PanelUserInfoModule';
+import ContactsModule from '@/components/ContactsModule';
 let lastTypingTime;
 export default {
     /**
@@ -20,6 +21,7 @@ export default {
      * PanelRoomInfoModule      群聊信息面板
      * PanelExpressionModule    表情模块
      * PanelUserInfoModule      用户信息面板
+     * ContactsModule           联系人模块
      * 
      * @data        - 状态
      * userInfo                 用户信息
@@ -46,6 +48,7 @@ export default {
      * roomInfoState            房间信息面板状态
      * expressionState          表情选择窗口状态
      * codeInputState           代码发送窗口状态
+     * contactsPanelLock        联系人面板状态
      * 
      * @methods     - 方法
      * userInfoUpdate           更新用户信息
@@ -77,6 +80,7 @@ export default {
         PanelRoomInfoModule,
         PanelExpressionModule,
         PanelUserInfoModule,  
+        ContactsModule
     },
     data () {
         return {
@@ -107,6 +111,9 @@ export default {
         chatPanelFlag (val) {
             // 更新仓库歌词状态
             this.$store.commit('UPDATE_LYRICSTATE', !this.chatPanelFlag);
+        },
+        chatPanelState (val) {
+            
         }
     },
     computed: {
@@ -160,6 +167,12 @@ export default {
         codeInputState () {
             return this.$store.state.codeInputState;
         },
+        chatPanelState () {
+            return this.$store.state.chatPanelState;
+        },
+        contactsPanelLock () {
+            return this.$store.state.contactsPanelState;
+        }
     },
     methods: {
         userInfoUpdate () {
@@ -464,6 +477,8 @@ export default {
     created () {
         // 检查离线状态下的未读消息, 初始化
         this.$store.commit('SOCKET_OFFLINE_NOREAD_MESSAGES_EMIT', this.userInfo.name);
+        // 加载联系人
+        this.$store.commit('SOCKET_CONTACTS_UPDATE_EMIT', this.userInfo.name);
     }
 }
 </script>
@@ -598,6 +613,7 @@ export default {
                 </panel-user-info-module>
             </transition>
         </div>
+        <contacts-module :lock="contactsPanelLock" @loadChatPanel="loadChatPanel"></contacts-module>
     </div>
 </template>
 

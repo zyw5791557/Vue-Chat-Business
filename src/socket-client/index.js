@@ -139,6 +139,7 @@ class SocketClient {
         this.stopTypingOn($this);
         this.searchUserOn($this);
         this.contactsUpdateOn($this);
+        this.userRemind($this);
     }
     static connectOn ($this) {
         $this.$socket.on('connect',() => {
@@ -307,9 +308,20 @@ class SocketClient {
         });
     }
 
+    // 更新联系人
     static contactsUpdateOn ($this) {
         $this.$socket.on('contacts update', res => {
             $this.$store.commit('UPDATE_MYCONTACTSLIST', res);
+        });
+    }
+
+    // 用户提醒
+    static userRemind ($this) {
+        $this.$socket.on('user remind', data => {
+            $this.$message({
+                message: data.message,
+                type: data.type
+            });
         });
     }
 }

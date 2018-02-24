@@ -243,7 +243,7 @@ io.on('connection', function(socket) {
         query.exec(function(err,person) {
             console.log('xxx',person);
             if(err) throw err;
-            if(person == null) {
+            if(person === null) {
                 var contacts = {
                     user: username,
                     contacts: new Array(item)
@@ -251,15 +251,55 @@ io.on('connection', function(socket) {
                 var usercontacts = new UserContacts(contacts);
                 usercontacts.save();
                 socket.emit('contacts update', new Array(item));
+                socket.emit('user remind', {
+                    message: '你添加了一个小伙伴~',
+                    type: 'success'
+                });
             } else {
-                
+                const conditions = { user: username };
+                let flag = true;
+                let updateContent = person.contacts;
+                const count = updateContent.length - 1;
+                updateContent.find((ele,index) => {
+                    if(ele.name === item.name) {
+                        socket.emit('user remind', {
+                            message: '你已经有该小伙伴啦~',
+                            type: 'error'
+                        });
+                        flag = false;
+                    }
+                });
+                if(flag) {
+                    updateContent.push(item);
+                    let update = {$set : { contacts: updateContent }};
+                    UserContacts.update(conditions, update, function (error) {
+                        if(error) {
+                            console.log(error);
+                        } else {
+                            socket.emit('user remind', {
+                                message: '你添加了一个小伙伴~',
+                                type: 'success'
+                            });
+                            socket.emit('contacts update', updateContent);
+                        }
+                    });
+                }
             }
         })
     });
 
+    // 查找用户联系人
+    socket.on('contacts update', function(name) {
+        const query = { user: name };
+        UserContacts.find(query, function(err,res) {
+            if(err) throw err;
+            socket.emit('contacts update', res[0].contacts);
+        });
+    });
+
     // 用户查找
     socket.on('search user', function(name) {
-        var query = { name: new RegExp(name, 'i') }
+        const query = { name: new RegExp(name, 'i') }
         User.find(query, { name: 1, avatar: 1 }, function(err,res) {
             if(err) throw err;
             socket.emit('search user', res);

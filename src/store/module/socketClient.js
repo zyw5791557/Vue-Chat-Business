@@ -53,6 +53,10 @@ const socket = {
             this._vm.$socket.emit('search user', name);
         },
 
+        SOCKET_CONTACTS_UPDATE_EMIT (state, name) {
+            this._vm.$socket.emit('contacts update', name);
+        },
+
         SOCKET_CONNECT (state) {
             this._vm.$socket.connect();
         },

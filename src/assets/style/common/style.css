@@ -1,6 +1,7 @@
 @charset "UTF-8";
 /* user */
 /** back
+$chat-base-color                        #212121
 $Base-background                        #03a9f4
 $Button-background                      #0288d1
 $Setting-button-background              #29b6f6
@@ -163,7 +164,7 @@ body {
   z-index: -1;
   height: 100%;
   background-repeat: no-repeat;
-  background-image: url("/static/images/b7.jpg");
+  background-image: url("/static/images/b1.jpg");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-color: #333;
@@ -175,7 +176,7 @@ body {
 }
 
 .background .background-mask {
-  background-image: url("/static/images/b7.jpg");
+  background-image: url("/static/images/b1.jpg");
   background-size: cover;
 }
 
@@ -1091,7 +1092,7 @@ header {
 
 .message-list-item .native-message > :nth-child(1000n+2) > :first-child span {
   font-size: 14px;
-  color: #202020;
+  color: #212121;
 }
 
 .message-list-item .native-message > :nth-child(1000n+2) > :first-child span:last-child {
@@ -1191,7 +1192,7 @@ header {
 .toolbar div i {
   font-size: 26px;
   margin: 0 10px;
-  color: #eee;
+  color: #444;
   text-align: center;
   cursor: pointer;
 }

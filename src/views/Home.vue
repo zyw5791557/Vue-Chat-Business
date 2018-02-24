@@ -2,7 +2,6 @@
 import { touristTips } from '@/common/js/util.js';
 import UserSettingModule from '@/components/UserSettingModule';
 import SystemSettingModule from '@/components/SystemSettingModule';
-import ContactsModule from '@/components/ContactsModule';
 export default {
     /**
      * @function
@@ -11,7 +10,6 @@ export default {
      * @components  - 组件注册
      * UserSettingModule        用户设置
      * SystemSettingModule      系统设置
-     * ContactsModule           联系人模块
      * 
      * @data        - 状态
      * backgroundSize           背景大小
@@ -25,7 +23,6 @@ export default {
      * userSettingState         用户设置窗口状态
      * systemSettingState       系统设置窗口状态
      * lyricState               歌词状态
-     * contactsPanelLock        联系人面板状态
      * 
      * @methods     - 方法
      * initBackgroundSize       初始化背景大小设置
@@ -47,8 +44,7 @@ export default {
     name: 'Home',
     components: {
         UserSettingModule,
-        SystemSettingModule,
-        ContactsModule
+        SystemSettingModule
     },
 	data() {
 		return {
@@ -79,9 +75,6 @@ export default {
         },
         lyricState () {
             return this.$store.state.lyricState; 
-        },
-        contactsPanelLock () {
-            return this.$store.state.contactsPanelState;
         }
     },
 	methods: {
@@ -185,9 +178,6 @@ export default {
 		<div v-show="lyricState" class="lyric_content">
             <div class="description"></div>
         </div>
-
-        <contacts-module :lock="contactsPanelLock"></contacts-module>
-
 	</div>
 </template>
 

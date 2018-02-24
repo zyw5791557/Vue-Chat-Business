@@ -194,7 +194,7 @@ const mutations = {
 
 	[types.UPDATE_MYCONTACTSLIST](state, data) {
 		state.myContactsList = data;
-	},
+	}
 
 };
 

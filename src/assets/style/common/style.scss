@@ -2,6 +2,7 @@
 
 
 /** back
+$chat-base-color                        #212121
 $Base-background                        #03a9f4
 $Button-background                      #0288d1
 $Setting-button-background              #29b6f6
@@ -15,15 +16,16 @@ $Toolbar-color-hover                    #666
 */
 
 /* 基色 */
+$chat-base-color: #212121;
+$Text-color: #757575;
 $Base-background: #474a4f;
 $Button-background: #212121;
 $Setting-button-background: #474a4f;
 $Setting-button-selected-background: #757575;
 $Lyric-color: #474a4f;
-$Chat-background-image: '/static/images/b7.jpg';
-$Text-color: #757575;
+$Chat-background-image: '/static/images/b1.jpg';
 $Chat-mask: 0px;
-$Toolbar-color: #eee;
+$Toolbar-color: #444;
 $Toolbar-color-hover: #bdbdbd;
 $typing-color: #666;       
 
@@ -1027,7 +1029,7 @@ header {
 
 .user-list-item .content div:first-child p:first-child {
     font-size: 14px;
-    color: #212121;
+    color: $chat-base-color;
     margin: 0
 }
 
@@ -1105,7 +1107,7 @@ header {
 
 .message-list-item .native-message>:nth-child(1000n+2)>:first-child span {
     font-size: 14px;
-    color: #202020
+    color: $chat-base-color
 }
 
 .message-list-item .native-message>:nth-child(1000n+2)>:first-child span:last-child {
@@ -1250,7 +1252,7 @@ header {
 }
 
 .chat-panel-header>div:nth-child(1000n+1) p {
-    color: #212121;
+    color: $chat-base-color;
     margin-left: 10px;
     font-size: 20px;
     font-weight: 700;
@@ -1484,7 +1486,7 @@ header {
 .group-notice .content {
     margin-top: 10px;
     font-size: 14px;
-    color: #212121
+    color: $chat-base-color
 }
 
 .group-notice .editor {
