@@ -110,13 +110,20 @@ io.on('connection', function(socket) {
         if(msgArr.length === 0) return;
         if(msgArr[0].to === 'all') return;
         for(var i = 0;i < msgArr.length;i++) {
-            if(msgArr[i].to === name) {
+            if(msgArr[i].to === name && msgArr[i].read === false) {
                 idArr.push(msgArr[i]._id);
             }
         }
         Messages.update({ _id: { $in: idArr } },{ $set: { read: true } }, { multi: true }, function(err,result) {
             if(err) throw err;
             console.log('已阅读：',result);
+        });
+    });
+
+    socket.on('one message read', function (res) {
+        Messages.update(res,{ $set: { read: true } }, function(err,result) {
+            if(err) throw err;
+            console.log('已阅读一条：',result);
         });
     });
 
@@ -293,7 +300,9 @@ io.on('connection', function(socket) {
         const query = { user: name };
         UserContacts.find(query, function(err,res) {
             if(err) throw err;
-            socket.emit('contacts update', res[0].contacts);
+            if(res.length > 0) {
+                socket.emit('contacts update', res[0].contacts);
+            }
         });
     });
 

@@ -167,6 +167,11 @@ class SocketClient {
                 concat: false,
                 data: data
             });
+            // 朕已阅
+            $this.$store.commit('SOCKET_MESSAGE_READ_EMIT', {
+                readUser: $this.$store.state.userInfo.name, 
+                msgs: $this.$store.state.currentChatData
+            });
             if(data.length > 0) $this.$store.commit('UPDATE_LATEST_MESSAGE', data[data.length - 1]);
         });
     }
@@ -174,6 +179,9 @@ class SocketClient {
     static messagesOn ($this) {
         $this.$socket.on('message', data => {
             console.log('消息',data);
+            if(data[0].from === $this.$store.state.currentChatUserInfo.userID) {
+                $this.$socket.emit('one message read', data[0]);
+            }
             $this.$store.commit('UPDATE_LATEST_MESSAGE', data[0]);
             // 渲染未读消息
             noReadMsgRender(data, $this);

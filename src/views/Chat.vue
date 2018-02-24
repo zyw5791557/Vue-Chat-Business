@@ -93,11 +93,6 @@ export default {
     },
     watch: {
         currentChatData (res) {
-            // 朕已阅
-            this.$store.commit('SOCKET_MESSAGE_READ_EMIT', {
-                readUser: this.userInfo.name, 
-                msgs: res
-            });
             this.$nextTick(() => {
                 this.chatPanelAdjust();
                 this.codeBlockAdjust();

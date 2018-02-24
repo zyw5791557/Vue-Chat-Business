@@ -16,6 +16,8 @@ export default{
 				deleteChatData: '/upload/clearData',
 				// 截图上传
 				'printscreen': '/upload/ps_upload',
+				'weather': 'http://api.jirengu.com/weather.php',
+				// 'weather': 'https://weixin.jirengu.com/weather',
 			}
 			let params = {};
 			params.url = api_port[api];

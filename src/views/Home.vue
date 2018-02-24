@@ -48,7 +48,13 @@ export default {
     },
 	data() {
 		return {
-            backgroundSize: ''
+            backgroundSize: '',
+            weatherCase: {
+                currentCity: '',
+                currentTemperature: '',
+                temperature: '',
+                weather: ''
+            }
 		}
     },
     computed: {
@@ -124,6 +130,15 @@ export default {
         this.winResize();
         // 音乐初始化 | 必须等节点加载完成
         playmusic('.description','432778620');
+        this.getApi('weather').then(res => {
+            this.weatherCase.currentCity = res.data.results[0].currentCity;
+            this.weatherCase.temperature = res.data.results[0].weather_data[0].temperature;
+            this.weatherCase.weather = res.data.results[0].weather_data[0].weather;
+            // this.weatherCase.currentCity = res.data.weather[0].city_name;
+            // this.weatherCase.currentTemperature = res.data.weather[0].now.temperature + '℃';
+            // this.weatherCase.temperature = res.data.weather[0].future[0].high + '℃' + '~' + res.data.weather[0].future[0].low + '℃';
+            // this.weatherCase.weather = res.data.weather[0].future[0].text;
+        });
 	}
 }
 </script>
@@ -152,6 +167,11 @@ export default {
                         </div>
                     </div>
                     <div class="user-panel">
+                        <div class="weather-box">
+                            <p class="weather-city">{{ weatherCase.currentCity }}</p>
+                            <p class="weather-temperature">{{ weatherCase.currentTemperature }}</p>
+                            <p class="weather-case">{{ weatherCase.temperature }} {{ weatherCase.weather }}</p>
+                        </div>
                         <div :class="{ offline: !connectState }" class="online" title="在线"></div>
                         <div :style="`background-image: url(${userInfo.avatar})`" @click="getMyPanel" class="avatar-text" title="查看个人信息"></div>
                     </div>
@@ -186,5 +206,19 @@ export default {
 .chatroom {
 	width: 100%;
     height: 100%;
+}
+.user-panel .weather-box {
+    width: 200px;
+    height: 100%;
+    color: #fff;
+    padding: 14px 0;
+    text-align: center;
+    p {
+        line-height: 26px;
+        font-size: 14px;
+    }
+    .weather-temperature {
+        font-size: 18px;
+    }
 }
 </style>
