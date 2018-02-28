@@ -225,7 +225,7 @@ export default {
                 console.log(param);
                 return `
                     <div class="image">
-                        <img data-original="/api/imgload?url=${param}" src="/api/imgload?url=${param}" onerror="this.src='/static/images/imgError.jpg'" style="max-height: 200px;">
+                        <img data-original="http://localhost:8989/api/imgload?url=${param}" src="http://localhost:8989/api/imgload?url=${param}" onerror="this.src='/static/images/imgError.jpg'" style="max-height: 200px;">
                     </div>
                 `;
             }
@@ -233,7 +233,7 @@ export default {
             if(FTA !== null && gf !== null) {
                 return `
                     <div class="image">
-                        <img class="gif-image" data-original="/api/imgload?url=${param}" src="/api/imgload?url=${param}" onerror="this.src='/static/images/imgError.jpg'" style="max-height: 200px;">
+                        <img class="gif-image" data-original="http://localhost:8989/api/imgload?url=${param}" src="http://localhost:8989/api/imgload?url=${param}" onerror="this.src='/static/images/imgError.jpg'" style="max-height: 200px;">
                     </div>
                 `;
             }
