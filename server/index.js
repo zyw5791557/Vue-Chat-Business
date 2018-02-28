@@ -9,12 +9,7 @@ const config = require('./config');
 // 权限列表
 $permissionArr = config.permissionArr;
 
-app.use(express.static(path.join('public')));
-app.use('/module', express.static('node_modules'));
-
-
-app.use('/login', express.static('public/login.html'));
-app.use('/register', express.static('public/register.html'));
+app.use(express.static('www'));
 
 // 引入数据库模块
 const Api = require('./server/api.js');
