@@ -14,12 +14,12 @@ module.exports = {
 	    //     	'^/upload': '/api'
 	    //     }
 	    // },
-		'/upload':{
-	        target: 'http://localhost:8989',
-	        changeOrigin:true,
-	        pathRewrite: {
-	        	'^/upload': '/api'
-	        }
-	    },
+		// '/upload':{
+	    //     target: 'http://localhost:8989',
+	    //     changeOrigin:true,
+	    //     pathRewrite: {
+	    //     	'^/upload': '/api'
+	    //     }
+	    // },
 	}
 }
