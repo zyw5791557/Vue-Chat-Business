@@ -13,8 +13,9 @@ let lastTypingTime;
 export default {
     /**
      * @function    - 函数
-     * Date                     添加 Date 方法到 Date 原型中
+     * Date                     扩展 Date 方法到 Date 原型中
      * touristTips              游客提示
+     * noticeProcess            消息处理器
      * 
      * @components  - 组件注册
      * PanelRoomNoticeModule    群聊公告面板
@@ -23,31 +24,35 @@ export default {
      * PanelUserInfoModule      用户信息面板
      * ContactsModule           联系人模块
      * 
+     * @var         - 变量
+     * lastTypingTime           最后的输入时间
+     * 
      * @data        - 状态
-     * userInfo                 用户信息
-     * duration                 注册时长
-     * onlineUsers              所用在线用户面板
-     * myUserListArr            我的临时会话集合
-     * currentChatData          当前聊天窗口的消息
+     * message                  消息状态 | input
+     * code                     代码状态 | textarea
      * chatGroup                群聊组
-     * userList                 用户列表
-     * currentChatUserInfo      当前聊天窗口用户信息
      * chatPanelFlag            聊天面板状态
      * secretPanel              是否为私聊窗口
-     * loading                  loading
      * 
      * @watch       - 被监听的状态
      * currentChatData          变动 | 查阅
+     * latestMessage            变动 | 消息提示
      * chatPanelFlag            变动 | 歌词状态
      * 
      * @computed    - 计算属性
      * userInfo                 用户信息
      * userPanelInfo            用户面板信息
+     * onlineUsers              在线用户
+     * myUserListArr            我的临时聊天用户列表
+     * currentChatData          当前聊天用户消息集合
+     * currentChatUserInfo      当前聊天面板用户信息
+     * loading                  聊天面板 | loading
      * userPanelState           用户信息面板状态
      * roomNoticeState          房间消息面板状态
      * roomInfoState            房间信息面板状态
      * expressionState          表情选择窗口状态
      * codeInputState           代码发送窗口状态
+     * chatPanelState           聊天面板状态
      * contactsPanelLock        联系人面板状态
      * 
      * @methods     - 方法
@@ -63,16 +68,18 @@ export default {
      * chatPanelAdjust          调整聊天框位置
      * codeBlockAdjust          代码块格式化调整
      * imageAdjust              图片加载完成调整
+     * imagePreviewHandle       图片预览处理器
      * imagePreview             图片预览
      * imgReader                截图上传
      * pasteMsg                 剪贴板消息
      * openContactsList         打开联系人列表
+     * typingEmit               typing | emit
      * 
      * @created     - 实例创建后触发
-     * socket.emit 'Offline noRead messages'        检查离线状态下的未读消息
+     * socket.emit 'SOCKET_OFFLINE_NOREAD_MESSAGES_EMIT'        检查离线状态下的未读消息、
+     * socket.emit 'SOCKET_CONTACTS_UPDATE_EMIT'                加载联系人
      * 
      * @mounted     - el 被 vm.$el 替代, 组件视图并不一定渲染完成, 保证组件渲染完成请使用 nextTick
-     * 初始化 socket-client 服务
      */
     name: 'Chat',
     components: {
@@ -106,9 +113,6 @@ export default {
         chatPanelFlag (val) {
             // 更新仓库歌词状态
             this.$store.commit('UPDATE_LYRICSTATE', !this.chatPanelFlag);
-        },
-        chatPanelState (val) {
-            
         }
     },
     computed: {

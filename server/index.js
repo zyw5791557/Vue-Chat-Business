@@ -40,14 +40,6 @@ function isTourist(value) {
 }
 
 var emitOnlineUser = function(u) {
-    // 服务器查询用户
-    // var query = { name: { $in: Object.keys(u) } }
-    // User.find(query, { name: 1, avatar: 1 }, function(err,r) {
-    //     if(err) throw err;
-    //     io.emit('user join', r);
-    // });
-
-
     // 带游客
     let res = [];
     new Promise((resolve, reject) => {

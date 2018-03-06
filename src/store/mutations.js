@@ -2,23 +2,33 @@ import * as types from './mutation-types';
 
 /**
  * @mutations
- * UPDATE_CONNECTSTATE					更新连接状态
- * UPDATE_USERINFO						更新登录用户信息
- * UPDATE_TOURISTINFO					更新游客信息
- * UPDATE_GLOBALMASK					更新全局蒙版
- * UPDATE_LYRICSTATE					更新歌词状态
- * UPDATE_USERSETTINGSTATE				更新用户设置面板状态
- * UPDATE_SYSTEMSETTINGSTATE			更新系统设置面板状态
- * UPDATE_USERPANELSTATE				更新用户面板状态
- * UPDATE_ROOMNOTICESTATE       		更新聊天室消息窗口状态
- * UPDATE_ROOMINFOSTATE         		更新聊天室信息窗口状态
- * UPDATE_EXPRESSIONSTATE       		更新表情界面状态
- * UPDATE_CODEINPUTSTATE        		更新代码输入窗口状态
- * UPDATE_CONTACTSPANELSTATE			更新联系人面板
- * DELETE_DB_MESSAGE					删除数据库消息
- * UPDATE_LATEST_MESSAGE				更新接受到最新的消息
- * UPDATE_TYPINGSTATE					更新打字状态
+ * UPDATE_CONNECTSTATE          更新连接状态
+ * UPDATE_USERINFO              更新登录用户信息
+ * UPDATE_TOURISTINFO           更新游客信息
+ * UPDATE_GLOBALMASK            更新全局蒙版
+ * UPDATE_LYRICSTATE            更新歌词状态
+ * UPDATE_USERSETTINGSTATE      更新用户设置状态
+ * UPDATE_SYSTEMSETTINGSTATE    更新系统设置状态
+ * UPDATE_USERPANELSTATE        更新用户面板状态
+ * UPDATE_ROOMNOTICESTATE       更新聊天室消息窗口状态
+ * UPDATE_ROOMINFOSTATE         更新聊天室信息窗口状态
+ * UPDATE_EXPRESSIONSTATE       更新表情界面状态
+ * UPDATE_CODEINPUTSTATE        更新代码输入窗口状态
+ * UPDATE_CONTACTSPANELSTATE    更新联系人面板状态
+ * DELETE_DB_MESSAGE            删除数据库消息    
  * 
+ * UPDATE_ONLINEUSERS           更新在线用户数   
+ * UPDATE_MYUSERLISTARR         更新我的当前聊天用户列表     
+ * UPDATE_CURRENTCHATDATA       更新当前聊天面板数据  
+ * UPDATE_USERLIST              更新用户列表
+ * UPDATE_CURRENTCHATUSERINFO   更新当前聊天用户信息
+ * UPDATE_LOADING               更新数据加载状态
+ * CLEAR_HISTORY                清空用户历史数据
+ * 
+ * UPDATE_LATEST_MESSAGE        更新收到的最新消息
+ * UPDATE_TYPINGSTATE           更新打字状态
+ * UPDATE_SEARCHUSERRES         查询用户结果
+ * UPDATE_MYCONTACTSLIST        更新我的联系人列表
  * 
  * @function - 函数
  * CHECK_GLOBALMASK						检查全局蒙版状态

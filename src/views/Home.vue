@@ -13,6 +13,7 @@ export default {
      * 
      * @data        - 状态
      * backgroundSize           背景大小
+     * weatherCase              天气状态
      * 
      * @computed    - 计算属性
      * myPanel                  我的面板信息
@@ -34,12 +35,14 @@ export default {
      * logout                   注销
      * 
      * @created     - 实例创建完成后被调用
-     * SOCKET_CHECK_PERMISSION_EMIT       检查用户权限
+     * SOCKET_CHECK_PERMISSION_EMIT                     检查用户权限 | emit
+     * SOCKET_USER_JOIN_EMIT                            用户加入 | emit
      * 
      * @mounted     - el 被 新创建 vm.$el 替代, 组件视图并不一定全部渲染完成
-     * initBackgroundSize                            初始化 backgroundSize 的值
-     * winResize                                     window.onresize 调整
-     * playmusic   1.歌词显示节点 2.网易云歌单ID       音乐初始化 | 必须等节点加载完成
+     * initBackgroundSize                               初始化 backgroundSize 的值
+     * winResize                                        window.onresize 调整
+     * playmusic   1.歌词显示节点 2.网易云歌单ID          音乐初始化 | 必须等节点加载完成
+     * getApi | weather                                 请求天气接口      
      */
     name: 'Home',
     components: {
@@ -134,10 +137,6 @@ export default {
             this.weatherCase.currentCity = res.data.results[0].currentCity;
             this.weatherCase.temperature = res.data.results[0].weather_data[0].temperature;
             this.weatherCase.weather = res.data.results[0].weather_data[0].weather;
-            // this.weatherCase.currentCity = res.data.weather[0].city_name;
-            // this.weatherCase.currentTemperature = res.data.weather[0].now.temperature + '℃';
-            // this.weatherCase.temperature = res.data.weather[0].future[0].high + '℃' + '~' + res.data.weather[0].future[0].low + '℃';
-            // this.weatherCase.weather = res.data.weather[0].future[0].text;
         });
 	}
 }

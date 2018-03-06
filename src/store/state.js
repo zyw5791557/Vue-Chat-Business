@@ -1,20 +1,35 @@
 /**
-* @constant state - Vuex状态
-* connectState			连接状态 | 默认 true
-* userInfo				用户信息
-* touristInfo			游客信息
-* globalMask			全局蒙版
-* expression			表情集合
-*  - baidu					- 百度表情
-* userSettingState		用户设置面板状态
-* systemSettingState	系统设置面板状态
-* userPanelState		用户面板状态
-* roomNoticeState		聊天室消息窗口状态
-* roomInfoState			聊天室信息窗口状态
-* expressionState		表情界面状态
-* codeInputState		代码输入窗口状态
-* contactsPanelState	联系人
-**/
+ *@constant state - Vuex状态
+ * connectState			连接状态 | 默认 true
+ * typingState			typning 状态
+ * systemConfig			系统配置项
+ * myPanel				我的面板信息
+ * userPanelInfo		用户面板信息
+ * userInfo				用户信息
+ * touristInfo			游客信息
+ * globalMask			全局蒙版
+ * lyricState			歌词状态
+ * userSettingState		用户设置面板状态
+ * systemSettingState	系统设置面板状态
+ * userPanelState		用户面板状态
+ * roomNoticeState		聊天室消息窗口状态
+ * roomInfoState		聊天室信息窗口状态
+ * expressionState		表情界面状态
+ * codeInputState		代码输入窗口状态
+ * contactsPanelState	联系人
+ * expression			表情集合
+ *  baidu					百度表情
+ * onlineUsers			在线用户
+ * myUserListArr		我的临时聊天用户列表
+ * currentChatData		当前聊天面板消息集合
+ * userList				用户列表
+ * currentChatUserInfo	当前聊天面板用户信息
+ * latestMessage		最新一条消息
+ * loading				loading 状态
+ * myContactsList		我的联系人列表
+ * searchUserRes		查询用户结果列表
+ * 
+ */
 
 const state = {
 	connectState: true,
