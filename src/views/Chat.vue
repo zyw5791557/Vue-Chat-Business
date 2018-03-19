@@ -538,7 +538,7 @@ export default {
                                     <div v-html="expressionProcess(item)"></div>
                                 </div>
                                 <div v-else-if="item.type === 'printscreen'" class="image" ref="preview">
-                                    <img :data-original="item.message" :src="item.message" onerror="this.src='/images/imgError.jpg'" style="max-height: 200px;">
+                                    <img :data-original="item.message" :src="item.message" onerror="this.src='/static/images/imgError.jpg'" style="max-height: 200px;">
                                 </div>
                                 <div v-else v-html="normalSmartProcess(item.message, item.type)">
                                     

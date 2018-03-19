@@ -8,6 +8,7 @@
  * 
  * @methods - 方法
  * checkSetting             初始化系统设置
+ * forceLogout              强制注销
  * clearChatData            清除数据库聊天数据
  * desktopNotice            桌面通知修改
  * desktopVoice             桌面声音修改
@@ -54,17 +55,20 @@ export default {
                 }
             }
         },
+        forceLogout () {
+            // 删除本地用户信息
+            localStorage.removeItem('UserInfo');
+            setTimeout(() => {
+                this.$router.push({ name: 'Login' });
+            },2000);
+        },
         clearChatData () {
-            if(this.$store.state.userInfo.token) {
+            if(!this.$store.state.userInfo.token) {
                 this.$notify.error({
                     title: '错误',
                     message: '登录超时, 请两秒后重新登录。'
                 });
-                // 删除本地用户信息
-                localStorage.removeItem('UserInfo');
-                setTimeout(() => {
-                    this.$router.push({ name: 'Login' });
-                },2000);
+                this.forceLogout();
                 return;
             }
             // 清库询问
@@ -89,6 +93,7 @@ export default {
                             title: '成功',
                             message: str
                         });
+                        this.forceLogout();
                     } else {
                         this.$notify.error({
                             title: '错误',
